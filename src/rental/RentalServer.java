@@ -1,8 +1,13 @@
 package rental;
 
+import server.ICarRentalCompany;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +18,20 @@ public class RentalServer {
 	public static void main(String[] args) throws ReservationException,
 			NumberFormatException, IOException {
 		CrcData data  = loadData("hertz.csv");
-		new CarRentalCompany(data.name, data.regions, data.cars);
+
+
+		System.setSecurityManager(null);
+		try {
+			CarRentalCompany obj = new CarRentalCompany(data.name, data.regions, data.cars);
+			ICarRentalCompany stub = (ICarRentalCompany) UnicastRemoteObject.exportObject(obj, 0);
+			Registry registry = LocateRegistry.getRegistry();
+			registry.bind("CarRentalCompany", stub);
+			System.err.println("Server ready");
+		} catch (Exception e) {
+			System.err.println("Server exception: " + e.toString());
+			e.printStackTrace();
+
+		}
 	}
 
 	public static CrcData loadData(String datafile)
@@ -25,6 +43,8 @@ public class RentalServer {
 		// open file
 		BufferedReader in = new BufferedReader(new FileReader(datafile));
 		StringTokenizer csvReader;
+
+
 		
 		try {
 			// while next line exists

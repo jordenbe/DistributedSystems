@@ -1,5 +1,7 @@
 package rental;
 
+import server.ICarRentalCompany;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CarRentalCompany {
+public class CarRentalCompany implements ICarRentalCompany {
 
 	private static Logger logger = Logger.getLogger(CarRentalCompany.class.getName());
 	
@@ -45,6 +47,8 @@ public class CarRentalCompany {
 	private void setName(String name) {
 		this.name = name;
 	}
+
+
 
     /***********
      * Regions *

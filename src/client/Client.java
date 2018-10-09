@@ -1,8 +1,13 @@
 package client;
 
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import rental.CarRentalCompany;
+import rental.CarType;
 import rental.Quote;
 import rental.Reservation;
 
@@ -11,7 +16,7 @@ public class Client extends AbstractTestBooking {
 	/********
 	 * MAIN *
 	 ********/
-	//test
+
 	public static void main(String[] args) throws Exception {
 		
 		String carRentalCompanyName = "Hertz";
@@ -19,7 +24,23 @@ public class Client extends AbstractTestBooking {
 		// An example reservation scenario on car rental company 'Hertz' would be...
 		Client client = new Client("simpleTrips", carRentalCompanyName);
 		client.run();
+
+		//
+		String host = (args.length < 1) ? null : args[0];
+		try {
+			Registry registry = LocateRegistry.getRegistry(host);
+			CarRentalCompany stub = (CarRentalCompany) registry.lookup("Hello");
+			Date startDate = new Date(2018, 12, 12);
+			Date endDate = new Date(2018, 12, 20);
+			Set<CarType> response = stub.getAvailableCarTypes(startDate,endDate);
+			System.out.println("response: " + response);
+		} catch (Exception e) {
+			System.err.println("Client exception: " + e.toString());
+			e.printStackTrace();
+		}
 	}
+
+
 	
 	/***************
 	 * CONSTRUCTOR *
@@ -120,4 +141,5 @@ public class Client extends AbstractTestBooking {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("TODO");
 	}
+
 }
