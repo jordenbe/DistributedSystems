@@ -6,16 +6,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import rental.CarRentalCompany;
-import rental.CarType;
-import rental.Quote;
-import rental.Reservation;
+import rental.*;
+import server.ICarRentalCompany;
 
 public class Client extends AbstractTestBooking {
+	private ICarRentalCompany stub;
 	
 	/********
 	 * MAIN *
 	 ********/
+
 
 	public static void main(String[] args) throws Exception {
 		
@@ -25,21 +25,7 @@ public class Client extends AbstractTestBooking {
 		Client client = new Client("simpleTrips", carRentalCompanyName);
 		client.run();
 
-		//
-		String host = (args.length < 1) ? null : args[0];
-		try {
-			Registry registry = LocateRegistry.getRegistry(host);
-			CarRentalCompany stub = (CarRentalCompany) registry.lookup("Hello");
-			Date startDate = new Date(2018, 12, 12);
-			Date endDate = new Date(2018, 12, 20);
-			Set<CarType> response = stub.getAvailableCarTypes(startDate,endDate);
-			System.out.println("response: " + response);
-		} catch (Exception e) {
-			System.err.println("Client exception: " + e.toString());
-			e.printStackTrace();
-		}
 	}
-
 
 	
 	/***************
@@ -49,7 +35,14 @@ public class Client extends AbstractTestBooking {
 	public Client(String scriptFile, String carRentalCompanyName) {
 		super(scriptFile);
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		//
+		try {
+			Registry registry = LocateRegistry.getRegistry(null);
+			 stub = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
+		} catch (Exception e) {
+			System.err.println("Client exception: " + e.toString());
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -66,7 +59,10 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected void checkForAvailableCarTypes(Date start, Date end) throws Exception {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		Set<CarType> availableCarTypes =	stub.getAvailableCarTypes(start, end);
+		for (CarType carType: availableCarTypes) {
+			System.out.println(carType.toString());
+		}
 	}
 
 	/**
@@ -91,7 +87,11 @@ public class Client extends AbstractTestBooking {
 	protected Quote createQuote(String clientName, Date start, Date end,
 			String carType, String region) throws Exception {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		ReservationConstraints reservationConstraints = new ReservationConstraints(start, end, carType, region);
+		Quote quote = stub.createQuote(reservationConstraints, "Client1");
+		System.out.println(quote.toString());
+		return  quote;
+
 	}
 
 	/**
@@ -107,7 +107,8 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected Reservation confirmQuote(Quote quote) throws Exception {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+		return stub.confirmQuote(quote);
+
 	}
 	
 	/**

@@ -25,7 +25,7 @@ public class RentalServer {
 			CarRentalCompany obj = new CarRentalCompany(data.name, data.regions, data.cars);
 			ICarRentalCompany stub = (ICarRentalCompany) UnicastRemoteObject.exportObject(obj, 0);
 			Registry registry = LocateRegistry.getRegistry();
-			registry.bind("CarRentalCompany", stub);
+			registry.bind("Hertz", stub);
 			System.err.println("Server ready");
 		} catch (Exception e) {
 			System.err.println("Server exception: " + e.toString());
