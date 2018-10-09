@@ -11,7 +11,7 @@ public class Client extends AbstractTestBooking {
 	/********
 	 * MAIN *
 	 ********/
-	
+	//test
 	public static void main(String[] args) throws Exception {
 		
 		String carRentalCompanyName = "Hertz";
