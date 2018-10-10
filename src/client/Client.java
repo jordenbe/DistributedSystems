@@ -2,6 +2,7 @@ package client;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -9,10 +10,12 @@ import java.util.Set;
 import rental.*;
 import server.ICarRentalCompany;
 
+import javax.naming.spi.ResolveResult;
+
 public class Client extends AbstractTestBooking {
 	private ICarRentalCompany stub;
-	
-	/********
+
+    /********
 	 * MAIN *
 	 ********/
 
@@ -88,7 +91,7 @@ public class Client extends AbstractTestBooking {
 			String carType, String region) throws Exception {
 		// TODO Auto-generated method stub
 		ReservationConstraints reservationConstraints = new ReservationConstraints(start, end, carType, region);
-		Quote quote = stub.createQuote(reservationConstraints, "Client1");
+		Quote quote = stub.createQuote(reservationConstraints, clientName);
 		System.out.println(quote.toString());
 		return  quote;
 
@@ -107,7 +110,8 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected Reservation confirmQuote(Quote quote) throws Exception {
 		// TODO Auto-generated method stub
-		return stub.confirmQuote(quote);
+        Reservation reservation = stub.confirmQuote(quote);
+        return reservation;
 
 	}
 	
@@ -124,7 +128,9 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected List<Reservation> getReservationsByRenter(String clientName) throws Exception {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("TODO");
+        List<Reservation> reservations = stub.getReservationsByRenter(clientName);
+        System.out.println(reservations.toString());
+        return reservations;
 	}
 
 	/**

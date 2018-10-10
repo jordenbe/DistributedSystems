@@ -51,7 +51,11 @@ public class Car {
         }
         return true;
     }
-    
+
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
     public void addReservation(Reservation res) {
         reservations.add(res);
     }

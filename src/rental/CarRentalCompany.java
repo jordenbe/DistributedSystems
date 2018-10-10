@@ -2,14 +2,7 @@ package rental;
 
 import server.ICarRentalCompany;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -164,6 +157,19 @@ public class CarRentalCompany implements ICarRentalCompany {
 	public void cancelReservation(Reservation res) {
 		logger.log(Level.INFO, "<{0}> Cancelling reservation {1}", new Object[]{name, res.toString()});
 		getCar(res.getCarId()).removeReservation(res);
+	}
+
+	public List<Reservation> getReservationsByRenter(String clientName) {
+		List<Reservation> clientReservations = new ArrayList<>();
+		for (Car car: cars ) {
+			for (Reservation reservation: car.getReservations()  ) {
+				if (reservation.getCarRenter().equals(clientName)) {
+					clientReservations.add(reservation);
+
+				}
+			}
+		}
+		return clientReservations;
 	}
 	
 	@Override
