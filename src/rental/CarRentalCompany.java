@@ -5,6 +5,7 @@ import server.ICarRentalCompany;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class CarRentalCompany implements ICarRentalCompany {
 
@@ -170,6 +171,19 @@ public class CarRentalCompany implements ICarRentalCompany {
 			}
 		}
 		return clientReservations;
+	}
+
+	public  int getNumberOfReservationsForCarType(final String carType) {
+	int totaal = 0;
+		for (Car car: cars ) {
+			for (Reservation reservation: car.getReservations()  ) {
+				if (reservation.getCarType().equals(carType)) {
+				totaal++;
+
+				}
+			}
+		}
+		return  totaal;
 	}
 	
 	@Override
