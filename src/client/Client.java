@@ -112,7 +112,6 @@ public class Client extends AbstractTestBooking {
 		// TODO Auto-generated method stub
         Reservation reservation = stub.confirmQuote(quote);
         return reservation;
-
 	}
 	
 	/**
