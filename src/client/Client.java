@@ -108,7 +108,6 @@ public class Client extends AbstractTestBooking {
 	protected Reservation confirmQuote(Quote quote) throws Exception {
         Reservation reservation = stub.confirmQuote(quote);
         return reservation;
-
 	}
 	
 	/**
