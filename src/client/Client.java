@@ -37,8 +37,7 @@ public class Client extends AbstractTestBooking {
 	
 	public Client(String scriptFile, String carRentalCompanyName) {
 		super(scriptFile);
-		// TODO Auto-generated method stub
-		//
+
 		try {
 			Registry registry = LocateRegistry.getRegistry(null);
 			 stub = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
@@ -61,7 +60,6 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected void checkForAvailableCarTypes(Date start, Date end) throws Exception {
-		// TODO Auto-generated method stub
 		Set<CarType> availableCarTypes =	stub.getAvailableCarTypes(start, end);
 		for (CarType carType: availableCarTypes) {
 			System.out.println(carType.toString());
@@ -89,7 +87,6 @@ public class Client extends AbstractTestBooking {
 	@Override
 	protected Quote createQuote(String clientName, Date start, Date end,
 			String carType, String region) throws Exception {
-		// TODO Auto-generated method stub
 		ReservationConstraints reservationConstraints = new ReservationConstraints(start, end, carType, region);
 		Quote quote = stub.createQuote(reservationConstraints, clientName);
 		System.out.println(quote.toString());
@@ -109,7 +106,6 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected Reservation confirmQuote(Quote quote) throws Exception {
-		// TODO Auto-generated method stub
         Reservation reservation = stub.confirmQuote(quote);
         return reservation;
 
@@ -127,7 +123,6 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected List<Reservation> getReservationsByRenter(String clientName) throws Exception {
-		// TODO Auto-generated method stub
         List<Reservation> reservations = stub.getReservationsByRenter(clientName);
         System.out.println(reservations.toString());
         return reservations;
@@ -145,7 +140,6 @@ public class Client extends AbstractTestBooking {
 	 */
 	@Override
 	protected int getNumberOfReservationsForCarType(String carType) throws Exception {
-		// TODO Auto-generated method stub
 		 return stub.getNumberOfReservationsForCarType(carType);
 
 	}
