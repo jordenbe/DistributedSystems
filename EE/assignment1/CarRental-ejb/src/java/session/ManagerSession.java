@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package session;
 
 import java.util.Collection;
@@ -13,11 +9,9 @@ import rental.CarRentalCompany;
 import rental.CarType;
 import rental.RentalStore;
 import rental.Reservation;
+import rental.ReservationConstraints;
 
-/**
- *
- * @author jorden
- */
+
 @Stateless
 public class ManagerSession implements ManagerSessionRemote {
 
@@ -29,12 +23,11 @@ public class ManagerSession implements ManagerSessionRemote {
         return carRentalCompany.getCarTypes();
     }
     
-    public int getNumberOfReservation(CarRentalCompany carRentalCompany,String carType){
-       
+    public int getNumberOfReservation(CarRentalCompany carRentalCompany, String carType){
       List<Car> cars =  carRentalCompany.getCars();
       int resAmount=0;
        for (Car car:cars){
-           if(car.getType().equals(carType)){
+           if(car.getType().getName().equals(carType)){
              List<Reservation> reservations =  car.getAllReservations();
             resAmount += reservations.size();       
            }
@@ -44,5 +37,10 @@ public class ManagerSession implements ManagerSessionRemote {
     
     public Object getBestCustomer(){
         
+    }
+
+    @Override
+    public void createQuote(ReservationConstraints constraints, String guest) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
