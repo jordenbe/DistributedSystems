@@ -12,9 +12,8 @@ import rental.*;
 
 @Remote
 public interface ManagerSessionRemote {
-    Collection<CarType> getCarTypes(CarRentalCompany carRentalCompany);
-    void createQuote(ReservationConstraints constraints, String guest);
-    int getNumberOfReservation(CarRentalCompany carRentalCompany, String carType);
+    Collection<CarType> getCarTypes(String carRentalCompany);
+    int getNumberOfReservation(String carRentalCompany, String carType);
     Object getBestCustomer();
     
 }
