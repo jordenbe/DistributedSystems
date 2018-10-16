@@ -3,6 +3,7 @@ package session;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import rental.Car;
 import rental.CarRentalCompany;
@@ -19,12 +20,13 @@ public class ManagerSession implements ManagerSessionRemote {
     // "Insert Code > Add Business Method")
     
     
-    public Collection<CarType> getCarTypes(CarRentalCompany carRentalCompany){
-        return carRentalCompany.getCarTypes();
+    public Collection<CarType> getCarTypes(String carRentalCompany){
+        
+        return RentalStore.getRental(carRentalCompany).getCarTypes();
     }
     
-    public int getNumberOfReservation(CarRentalCompany carRentalCompany, String carType){
-      List<Car> cars =  carRentalCompany.getCars();
+    public int getNumberOfReservation(String carRentalCompany, String carType){
+      List<Car> cars = RentalStore.getRental(carRentalCompany).getCars();
       int resAmount=0;
        for (Car car:cars){
            if(car.getType().getName().equals(carType)){
@@ -36,11 +38,13 @@ public class ManagerSession implements ManagerSessionRemote {
     }
     
     public Object getBestCustomer(){
-        
+       Set<String> companies = RentalStore.getRentals().keySet();
+       for (String c:companies){
+           CarRentalCompany carRentalCompany = RentalStore.getRental(c);
+           carRentalCompany.
+       }
+       
     }
 
-    @Override
-    public void createQuote(ReservationConstraints constraints, String guest) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 }
