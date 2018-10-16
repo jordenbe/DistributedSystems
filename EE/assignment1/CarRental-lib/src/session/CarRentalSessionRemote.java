@@ -12,7 +12,7 @@ public interface CarRentalSessionRemote {
 
     Set<String> getAllRentalCompanies();
     void createQuote(ReservationConstraints constraints, String guest);
-     List<Quote> getCurrentQuotes();
-     void confirmQuotes() throws ReservationException;
+    List<Quote> getCurrentQuotes();
+    void confirmQuotes() throws ReservationException;
     
 }

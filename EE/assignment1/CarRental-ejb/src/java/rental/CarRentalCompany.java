@@ -14,8 +14,7 @@ import java.util.logging.Logger;
 public class CarRentalCompany {
 
 	private static Logger logger = Logger.getLogger(CarRentalCompany.class.getName());
-	
-    private List<String> regions;
+        private List<String> regions;
 	private String name;
 	private List<Car> cars;
 	private Map<String,CarType> carTypes;
