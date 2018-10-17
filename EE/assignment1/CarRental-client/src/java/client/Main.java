@@ -12,13 +12,15 @@ public class Main extends AbstractTestAgency<Object, Object>{
     @EJB
     static CarRentalSessionRemote session;
     
-    @EJB
-    static ManagerSessionRemote managerSession;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         System.out.println("found rental companies: "+session.getAllRentalCompanies());
+    }
+
+    public Main(String scriptFile) {
+        super(scriptFile);
     }
 
     @Override
