@@ -1,11 +1,14 @@
 package session;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.ejb.Stateful;
 import rental.CarRentalCompany;
+import rental.CarType;
 import rental.Quote;
 import rental.RentalStore;
 import rental.Reservation;
@@ -34,7 +37,17 @@ public class CarRentalSession implements CarRentalSessionRemote {
           }
             
       }              
-         
+    }
+    
+    public Set<CarType> checkAvailableCarTypes(Date start, Date end)
+    {
+        Set<CarType> carTypes = new TreeSet<CarType>();
+        for(String str : getAllRentalCompanies())
+        {
+            CarRentalCompany com = RentalStore.getRental(str);
+            carTypes.addAll(com.getAvailableCarTypes(start, end));
+        }
+        return carTypes;
     }
     
     public List<Quote> getCurrentQuotes(){
@@ -58,6 +71,11 @@ public class CarRentalSession implements CarRentalSessionRemote {
           
                
         }
+
+    @Override
+    public List<Reservation> getCurrentReservations() {
+        return reservationList;
+    }
 
     
 }

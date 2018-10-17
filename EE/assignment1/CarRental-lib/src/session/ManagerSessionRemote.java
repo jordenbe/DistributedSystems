@@ -15,5 +15,5 @@ public interface ManagerSessionRemote {
     Collection<CarType> getCarTypes(String carRentalCompany);
     int getNumberOfReservation(String carRentalCompany, String carType);
     Object getBestCustomer();
-    
+    int getNumberOfReservationsBy(String client);
 }

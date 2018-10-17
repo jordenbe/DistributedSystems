@@ -1,9 +1,14 @@
 
 package session;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import javax.ejb.Stateless;
 import rental.Car;
 import rental.CarRentalCompany;
@@ -37,13 +42,43 @@ public class ManagerSession implements ManagerSessionRemote {
        return resAmount;
     }
     
-    public Object getBestCustomer(){
-       Set<String> companies = RentalStore.getRentals().keySet();
-       for (String c:companies){
-           CarRentalCompany carRentalCompany = RentalStore.getRental(c);
-           carRentalCompany.
-       }
-       
+    public String getBestCustomer(){
+        Set<String> companies = RentalStore.getRentals().keySet();
+        Map<String,Integer> klanten = new TreeMap<String,Integer>();
+        for (String c:companies){
+            CarRentalCompany carRentalCompany = RentalStore.getRental(c);
+            for(Car car: carRentalCompany.getCars()){
+                for(Reservation r : car.getAllReservations())
+                {
+                    Integer cur = klanten.get(r.getCarRenter());
+                    klanten.put(r.getCarRenter(),cur==null?1:cur++);
+                }
+            }
+        }
+        Map.Entry<String,Integer> max = null;
+        for(Map.Entry<String,Integer> e : klanten.entrySet())
+            if(max == null || e.getValue() > max.getValue())
+                max = e;
+        return max.getKey();
+    }
+
+    @Override
+    public int getNumberOfReservationsBy(String client) {
+        int c = 0;
+        for(CarRentalCompany cr : getCompanies())
+        {
+            c += cr.getReservationsBy(client).size();
+        }
+        return c;
+    }
+    
+    private List<CarRentalCompany> getCompanies()
+    {
+        Set<String> companies = RentalStore.getRentals().keySet();
+        List<CarRentalCompany> crcs = new ArrayList<CarRentalCompany>();
+        for(String str : companies)
+            crcs.add(RentalStore.getRental(str));
+        return crcs;
     }
 
    
