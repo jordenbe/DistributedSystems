@@ -39,13 +39,16 @@ public class CarRentalSession implements CarRentalSessionRemote {
       }              
     }
     
-    public Set<CarType> checkAvailableCarTypes(Date start, Date end)
+    public Set<String> checkAvailableCarTypes(Date start, Date end)
     {
-        Set<CarType> carTypes = new TreeSet<CarType>();
+        Set<String> carTypes = new HashSet<String>();
         for(String str : getAllRentalCompanies())
         {
             CarRentalCompany com = RentalStore.getRental(str);
-            carTypes.addAll(com.getAvailableCarTypes(start, end));
+           
+            for (CarType ct:com.getAvailableCarTypes(start, end)){
+                carTypes.add(ct.toString());
+            }
         }
         return carTypes;
     }

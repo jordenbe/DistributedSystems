@@ -3,6 +3,9 @@ package client;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.print.PaperSource;
 import javax.ejb.EJB;
 import rental.CarType;
 import rental.Reservation;
@@ -22,11 +25,20 @@ public class Main extends AbstractTestAgency<Object, Object>{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("found rental companies: "+session.getAllRentalCompanies());
+        try {
+            System.out.println("found rental companies: "+session.getAllRentalCompanies());
+            Main m = new Main("simpleTrips");
+            m.run();
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
 
     public Main(String scriptFile) {
         super(scriptFile);
+       
+       
     }
 
     @Override
@@ -41,8 +53,8 @@ public class Main extends AbstractTestAgency<Object, Object>{
 
     @Override
     protected void checkForAvailableCarTypes(Object session, Date start, Date end) throws Exception {
-        Set<CarType> cts = ((CarRentalSessionRemote)session).checkAvailableCarTypes(start, end);
-        for(CarType ct : cts )
+        Set<String> cts = ((CarRentalSessionRemote)session).checkAvailableCarTypes(start, end);
+        for(String ct : cts )
         {
             System.out.println(ct);
         }
