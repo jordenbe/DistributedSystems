@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.print.PaperSource;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import rental.CarType;
 import rental.Reservation;
 import rental.ReservationConstraints;
@@ -43,12 +44,19 @@ public class Main extends AbstractTestAgency<Object, Object>{
 
     @Override
     protected Object getNewReservationSession(String name) throws Exception {
-       return session;
+        
+       //return session;
+        InitialContext context = new InitialContext();
+        return  (CarRentalSessionRemote) context.lookup(CarRentalSessionRemote.class.getName());
+      
+       
     }
 
     @Override
     protected Object getNewManagerSession(String name, String carRentalName) throws Exception {
-        return mSession;
+       // return mSession;
+         InitialContext context = new InitialContext();
+        return (ManagerSessionRemote) context.lookup(ManagerSessionRemote.class.getName()); 
     }
 
     @Override
@@ -63,7 +71,11 @@ public class Main extends AbstractTestAgency<Object, Object>{
     @Override
     protected void addQuoteToSession(Object session, String name, Date start, Date end, String carType, String region) throws Exception {
         ReservationConstraints rc = new ReservationConstraints(start, end, carType, region);
-        ((CarRentalSessionRemote)session).createQuote(rc, name);
+       ((CarRentalSessionRemote)session).createQuote(rc, name);
+     
+     
+     
+     
     }
 
     @Override

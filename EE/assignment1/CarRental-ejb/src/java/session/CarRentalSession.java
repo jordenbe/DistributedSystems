@@ -38,6 +38,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
             
       }              
     }
+  
     
     public Set<String> checkAvailableCarTypes(Date start, Date end)
     {
@@ -67,8 +68,8 @@ public class CarRentalSession implements CarRentalSessionRemote {
             catch(ReservationException ex){
                 for (Reservation res:reservationList){
                      RentalStore.getRental(res.getRentalCompany()).cancelReservation(res);
-                throw ex;
             }
+              
         } 
     }        
           
