@@ -13,7 +13,7 @@ import rental.ReservationException;
 @Remote
 public interface CarRentalSessionRemote {
     Set<String> getAllRentalCompanies();
-    void createQuote(ReservationConstraints constraints, String guest) throws ReservationException;
+    void createQuote(ReservationConstraints constraints, String guest);
     List<Quote> getCurrentQuotes();
     List<Reservation> getCurrentReservations();
     void confirmQuotes() throws ReservationException;
