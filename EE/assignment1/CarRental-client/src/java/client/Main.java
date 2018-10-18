@@ -43,10 +43,9 @@ public class Main extends AbstractTestAgency<Object, Object>{
     }
 
     @Override
-    protected Object getNewReservationSession(String name) throws Exception {
-        
+    protected Object getNewReservationSession(String name) throws Exception { 
        //return session;
-        InitialContext context = new InitialContext();
+       InitialContext context = new InitialContext();
         return  (CarRentalSessionRemote) context.lookup(CarRentalSessionRemote.class.getName());
       
        
@@ -54,9 +53,9 @@ public class Main extends AbstractTestAgency<Object, Object>{
 
     @Override
     protected Object getNewManagerSession(String name, String carRentalName) throws Exception {
-       // return mSession;
-         InitialContext context = new InitialContext();
-        return (ManagerSessionRemote) context.lookup(ManagerSessionRemote.class.getName()); 
+      //  return mSession;
+        InitialContext context = new InitialContext();
+       return (ManagerSessionRemote) context.lookup(ManagerSessionRemote.class.getName()); 
     }
 
     @Override

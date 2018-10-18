@@ -26,7 +26,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
         return new HashSet<String>(RentalStore.getRentals().keySet());
     }
     
-    public void createQuote(ReservationConstraints constraints, String guest){
+    public void createQuote(ReservationConstraints constraints, String guest) throws ReservationException{
       for(String name:getAllRentalCompanies()){
           try{
             CarRentalCompany company =  RentalStore.getRental(name);
