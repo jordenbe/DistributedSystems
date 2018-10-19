@@ -30,17 +30,7 @@ public class ManagerSession implements ManagerSessionRemote {
         return RentalStore.getRental(carRentalCompany).getCarTypes();
     }
     
-    public int getNumberOfReservation(String carRentalCompany, String carType){
-      List<Car> cars = RentalStore.getRental(carRentalCompany).getCars();
-      int resAmount=0;
-       for (Car car:cars){
-           if(car.getType().getName().equals(carType)){
-             List<Reservation> reservations =  car.getAllReservations();
-            resAmount += reservations.size();       
-           }
-       }
-       return resAmount;
-    }
+ 
     
     public String getBestCustomer(){
         Set<String> companies = RentalStore.getRentals().keySet();
@@ -67,10 +57,13 @@ public class ManagerSession implements ManagerSessionRemote {
         int c = 0;
         for(CarRentalCompany cr : getCompanies())
         {
-            c += cr.getReservationsBy(client).size();
+            c += cr.getNumberOfReservationsBy(client);
         }
         return c;
     }
+   
+
+
     
     private List<CarRentalCompany> getCompanies()
     {
@@ -79,6 +72,11 @@ public class ManagerSession implements ManagerSessionRemote {
         for(String str : companies)
             crcs.add(RentalStore.getRental(str));
         return crcs;
+    }
+
+    @Override
+    public int getNumberOfReservation(String carRentalCompany, String carType) {
+        return RentalStore.getRentals().get(carRentalCompany).getNumberOfReservationsForCarType(carType);
     }
 
    

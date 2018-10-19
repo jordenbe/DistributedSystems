@@ -172,4 +172,21 @@ public class CarRentalCompany {
         }
         return out;
     }
+        
+        public int getNumberOfReservationsForCarType(String carType){
+            int c= 0;
+            for(Car car : cars){
+                if(car.getType() == getType(carType))
+                    c+=car.getNumberOfReservations();
+            }
+            return c;
+        }
+        
+         public int getNumberOfReservationsBy(String client) {
+            int total = 0;
+            for(Car car : cars){
+                total += car.getNumberOfReservationsBy(client);
+            }
+            return total;
+        } 
 }

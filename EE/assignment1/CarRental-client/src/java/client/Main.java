@@ -13,7 +13,8 @@ import rental.ReservationConstraints;
 import session.CarRentalSessionRemote;
 import session.ManagerSessionRemote;
 
-public class Main extends AbstractTestAgency<Object, Object>{
+public class Main extends AbstractTestAgency<CarRentalSessionRemote, ManagerSessionRemote>
+{
     
     @EJB
     static CarRentalSessionRemote session;
@@ -42,18 +43,18 @@ public class Main extends AbstractTestAgency<Object, Object>{
     }
 
     @Override
-    protected Object getNewReservationSession(String name) throws Exception {
+    protected CarRentalSessionRemote getNewReservationSession(String name) throws Exception {
        return session;
     }
 
     @Override
-    protected Object getNewManagerSession(String name, String carRentalName) throws Exception {
+    protected ManagerSessionRemote getNewManagerSession(String name, String carRentalName) throws Exception {
         return mSession;
     }
 
     @Override
-    protected void checkForAvailableCarTypes(Object session, Date start, Date end) throws Exception {
-        Set<String> cts = ((CarRentalSessionRemote)session).checkAvailableCarTypes(start, end);
+    protected void checkForAvailableCarTypes(CarRentalSessionRemote  session, Date start, Date end) throws Exception {
+        Set<String> cts = session.checkAvailableCarTypes(start, end);
         for(String ct : cts )
         {
             System.out.println(ct);
@@ -61,25 +62,25 @@ public class Main extends AbstractTestAgency<Object, Object>{
     }
 
     @Override
-    protected void addQuoteToSession(Object session, String name, Date start, Date end, String carType, String region) throws Exception {
+    protected void addQuoteToSession(CarRentalSessionRemote  session, String name, Date start, Date end, String carType, String region) throws Exception {
         ReservationConstraints rc = new ReservationConstraints(start, end, carType, region);
-        ((CarRentalSessionRemote)session).createQuote(rc, name);
+        session.createQuote(rc, name);
     }
 
     @Override
-    protected List<Reservation> confirmQuotes(Object session, String name) throws Exception {
-        ((CarRentalSessionRemote)session).confirmQuotes();
-        return ((CarRentalSessionRemote)session).getCurrentReservations();
+    protected List<Reservation> confirmQuotes(CarRentalSessionRemote session, String name) throws Exception {
+        session.confirmQuotes(name);
+        return session.getCurrentReservations();
     }
 
     @Override
-    protected int getNumberOfReservationsBy(Object ms, String clientName) throws Exception {
-        return ((ManagerSessionRemote)session).getNumberOfReservationsBy(clientName);
+    protected int getNumberOfReservationsBy(ManagerSessionRemote  ms, String clientName) throws Exception {
+        return ms.getNumberOfReservationsBy(clientName);
     }
 
     @Override
-    protected int getNumberOfReservationsForCarType(Object ms, String carRentalName, String carType) throws Exception {
-       return  ((ManagerSessionRemote)ms).getNumberOfReservation(carRentalName, carType);
+    protected int getNumberOfReservationsForCarType(ManagerSessionRemote  ms, String carRentalName, String carType) throws Exception {
+       return   ms.getNumberOfReservation(carRentalName, carType);
       
     }
 }

@@ -64,4 +64,18 @@ public class Car {
 	public List<Reservation> getAllReservations() {
         return reservations;
     }
+        
+    public int getNumberOfReservations() {
+        return reservations.size();
+    }
+
+    public int getNumberOfReservationsBy(String client) {
+        int c = 0;
+        for (Reservation r : reservations) {
+            if (r.getCarRenter().equals(client)) {
+                c++;
+            }
+        }
+        return c;
+    }
 }
