@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.print.PaperSource;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import rental.CarType;
 import rental.Reservation;
 import rental.ReservationConstraints;
@@ -38,18 +39,21 @@ public class Main extends AbstractTestAgency<CarRentalSessionRemote, ManagerSess
 
     public Main(String scriptFile) {
         super(scriptFile);
-       
-       
     }
 
-    @Override
-    protected CarRentalSessionRemote getNewReservationSession(String name) throws Exception {
-       return session;
+    protected CarRentalSessionRemote getNewReservationSession(String name) throws Exception { 
+       //return session;
+       InitialContext context = new InitialContext();
+        return  (CarRentalSessionRemote) context.lookup(CarRentalSessionRemote.class.getName());
+      
+       
     }
 
     @Override
     protected ManagerSessionRemote getNewManagerSession(String name, String carRentalName) throws Exception {
-        return mSession;
+      //  return mSession;
+        InitialContext context = new InitialContext();
+       return (ManagerSessionRemote) context.lookup(ManagerSessionRemote.class.getName()); 
     }
 
     @Override

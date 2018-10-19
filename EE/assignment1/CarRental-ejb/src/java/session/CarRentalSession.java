@@ -43,6 +43,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
             }
         }           
     }
+  
     
     @Override
     public Set<String> checkAvailableCarTypes(Date start, Date end)
@@ -77,6 +78,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
                 }
                 throw ex;
             }
+              
         } 
     }        
           
