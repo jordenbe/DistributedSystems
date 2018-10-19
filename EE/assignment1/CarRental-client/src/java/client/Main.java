@@ -41,6 +41,7 @@ public class Main extends AbstractTestAgency<CarRentalSessionRemote, ManagerSess
         super(scriptFile);
     }
 
+    @Override
     protected CarRentalSessionRemote getNewReservationSession(String name) throws Exception { 
        //return session;
        InitialContext context = new InitialContext();
