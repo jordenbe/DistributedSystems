@@ -17,6 +17,7 @@ public interface ManagerSessionRemote {
     Set<String> getCarInformation(String carRentalCompany);
 
     int getNumberOfReservationsByCarType(String carRentalCompany, String carType);
+    int getNumberOfReservationsBy(String client);
 
     String getBestCustomer();
 

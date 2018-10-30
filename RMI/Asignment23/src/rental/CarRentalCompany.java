@@ -209,7 +209,15 @@ public class CarRentalCompany implements ICarRentalCompany {
         }
         return  totaal;
     }
-	
+
+	public int getNumberOfReservationsBy(String client) {
+		int total = 0;
+		for(Car car : cars){
+			total += car.getNumberOfReservationsBy(client);
+		}
+		return total;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("<%s> CRC is active in regions %s and serving with %d car types", name, listToString(regions), carTypes.size());

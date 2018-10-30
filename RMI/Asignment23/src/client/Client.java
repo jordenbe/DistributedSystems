@@ -52,7 +52,8 @@ public class Client extends AbstractTestManagement<ReservationSessionRemote,Mana
 
 	@Override
 	protected Set<String> getBestClients(ManagerSessionRemote ms) throws Exception {
-	 	return null;
+	 	//return ms.getBestCustomer();
+		return null;
 	}
 
 	@Override
@@ -87,16 +88,16 @@ public class Client extends AbstractTestManagement<ReservationSessionRemote,Mana
 
 	@Override
 	protected List<Reservation> confirmQuotes(ReservationSessionRemote reservationSessionRemote, String name) throws Exception {
-		return null;
+	return reservationSessionRemote.confirmQuotes(name);
 	}
 
 	@Override
 	protected int getNumberOfReservationsBy(ManagerSessionRemote ms, String clientName) throws Exception {
-		return 0;
+		return ms.getNumberOfReservationsBy(clientName);
 	}
 
 	@Override
 	protected int getNumberOfReservationsForCarType(ManagerSessionRemote ms, String carRentalName, String carType) throws Exception {
-		return 0;
+		return ms.getNumberOfReservationsByCarType(carRentalName,carType);
 	}
 }

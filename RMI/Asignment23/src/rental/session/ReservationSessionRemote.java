@@ -15,7 +15,7 @@ import java.util.Set;
 public interface ReservationSessionRemote extends Remote {
     void createQuote(ReservationConstraints constraints, String guest) throws RemoteException;
     List<Quote> getCurrentQuotes() throws  RemoteException;
-    void confirmQuotes(String name) throws ReservationException, RemoteException;
+    List<Reservation> confirmQuotes(String name) throws ReservationException, RemoteException;
     Set<String> getAvailableCarTypes(Date start, Date end) throws RemoteException;
     String getCheapestCarType(Date start,Date end) throws RemoteException;
 

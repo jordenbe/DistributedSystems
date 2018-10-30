@@ -64,6 +64,16 @@ public class ManagerSession implements ManagerSessionRemote {
     }
 
     @Override
+    public int getNumberOfReservationsBy(String client) {
+        int c = 0;
+        for(CarRentalCompany cr : NamingService.getCarRentalCompanies())
+        {
+            c += cr.getNumberOfReservationsBy(client);
+        }
+        return c;
+    }
+
+    @Override
     public String getBestCustomer() {
        // Set<String> companies = NamingService.getCarRentalCompanies();
         Map<String,Integer> klanten = new TreeMap<>();

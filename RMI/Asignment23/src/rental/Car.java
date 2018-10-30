@@ -64,4 +64,14 @@ public class Car {
         // equals-method for Reservation is required!
         reservations.remove(reservation);
     }
+
+    public int getNumberOfReservationsBy(String client) {
+        int c = 0;
+        for (Reservation r : reservations) {
+            if (r.getCarRenter().equals(client)) {
+                c++;
+            }
+        }
+        return c;
+    }
 }

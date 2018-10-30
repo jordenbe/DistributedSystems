@@ -36,7 +36,7 @@ public class ReservationSession implements ReservationSessionRemote {
     }
 
     @Override
-    public synchronized void confirmQuotes(String name) throws ReservationException, RemoteException {
+    public synchronized List<Reservation> confirmQuotes(String name) throws ReservationException, RemoteException {
         for(Quote quote :getCurrentQuotes()){
             CarRentalCompany company = NamingService.getCarRentalCompany(quote.getRentalCompany());
             try{
@@ -51,6 +51,7 @@ public class ReservationSession implements ReservationSessionRemote {
             }
 
         }
+        return  reservationList;
 
     }
 
