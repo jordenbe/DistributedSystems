@@ -2,6 +2,7 @@ package rental;
 
 import server.ICarRentalCompany;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,10 +93,16 @@ public class CarRentalCompany implements ICarRentalCompany {
 		}
 		return availableCarTypes;
 	}
-	
-	/*********
+
+
+
+    /*********
 	 * CARS *
 	 *********/
+
+    public List<Car> getCars() {
+        return cars;
+    }
 	
 	private Car getCar(int uid) {
 		for (Car car : cars) {
@@ -185,6 +192,23 @@ public class CarRentalCompany implements ICarRentalCompany {
 		}
 		return  totaal;
 	}
+
+    public  int getNumberOfReservationsForCarTypeInYear(final String carType,int year) {
+        int totaal = 0;
+        for (Car car: cars ) {
+            for (Reservation reservation: car.getReservations()  ) {
+                Date d = reservation.getStartDate();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(d);
+                int resYear = cal.get(Calendar.YEAR);
+                if (reservation.getCarType().equals(carType) && resYear == year) {
+                    totaal++;
+
+                }
+            }
+        }
+        return  totaal;
+    }
 	
 	@Override
 	public String toString() {

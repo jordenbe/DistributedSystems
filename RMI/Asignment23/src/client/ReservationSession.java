@@ -60,21 +60,31 @@ public class ReservationSession implements ReservationSessionRemote {
         for(CarRentalCompany com : NamingService.getCarRentalCompanies())
         {
             for (CarType ct:com.getAvailableCarTypes(start, end)){
-                carTypes.add(ct.toString());
+                carTypes.add(ct.getName());
             }
         }
         return carTypes;
     }
 
     @Override
-    public String getCheapestCarType(Date start, Date end) {
-        return null;
+    public String getCheapestCarType(Date start, Date end) throws RemoteException {
+       String cartype = "";
+       double cheapestPrice = Double.MAX_VALUE;
+
+        for(CarRentalCompany com : NamingService.getCarRentalCompanies())
+        {
+            for (CarType ct:com.getAvailableCarTypes(start, end)){
+                if (ct.getRentalPricePerDay() < cheapestPrice) {
+                    cartype = ct.getName();
+                    cheapestPrice =  ct.getRentalPricePerDay();
+                }
+            }
+        }
+        return  cartype;
     }
-
-
 
     @Override
     public List<Reservation> getCurrentReservations() {
-        return null;
+        return reservationList;
     }
 }

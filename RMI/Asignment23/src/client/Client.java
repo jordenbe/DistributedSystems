@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Set;
 
 import rental.*;
+import rental.session.ManagerSessionRemote;
+import rental.session.ReservationSessionRemote;
 import server.ICarRentalCompany;
 
 import javax.naming.spi.ResolveResult;
 
-public class Client extends AbstractTestBooking {
+public class Client extends AbstractTestManagement<ReservationSessionRemote,ManagerSessionRemote> {
 	private ICarRentalCompany stub;
 
     /********
@@ -46,101 +48,55 @@ public class Client extends AbstractTestBooking {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Check which car types are available in the given period
-	 * and print this list of car types.
-	 *
-	 * @param 	start
-	 * 			start time of the period
-	 * @param 	end
-	 * 			end time of the period
-	 * @throws 	Exception
-	 * 			if things go wrong, throw exception
-	 */
+
+
 	@Override
-	protected void checkForAvailableCarTypes(Date start, Date end) throws Exception {
-		Set<CarType> availableCarTypes =	stub.getAvailableCarTypes(start, end);
-		for (CarType carType: availableCarTypes) {
-			System.out.println(carType.toString());
-		}
+	protected Set<String> getBestClients(ManagerSessionRemote ms) throws Exception {
+	 	return null;
 	}
 
-	/**
-	 * Retrieve a quote for a given car type (tentative reservation).
-	 * 
-	 * @param	clientName 
-	 * 			name of the client 
-	 * @param 	start 
-	 * 			start time for the quote
-	 * @param 	end 
-	 * 			end time for the quote
-	 * @param 	carType 
-	 * 			type of car to be reserved
-	 * @param 	region
-	 * 			region in which car must be available
-	 * @return	the newly created quote
-	 *  
-	 * @throws 	Exception
-	 * 			if things go wrong, throw exception
-	 */
 	@Override
-	protected Quote createQuote(String clientName, Date start, Date end,
-			String carType, String region) throws Exception {
-		ReservationConstraints reservationConstraints = new ReservationConstraints(start, end, carType, region);
-		Quote quote = stub.createQuote(reservationConstraints, clientName);
-		System.out.println(quote.toString());
-		return  quote;
+	protected String getCheapestCarType(ReservationSessionRemote reservationSessionRemote, Date start, Date end, String region) throws Exception {
+	return	reservationSessionRemote.getCheapestCarType(start, end);
+	}
+
+	@Override
+	protected CarType getMostPopularCarTypeIn(ManagerSessionRemote ms, String carRentalCompanyName, int year) throws Exception {
+	return 	ms.getMostPopularCarType(carRentalCompanyName, year);
+	}
+
+	@Override
+	protected ReservationSessionRemote getNewReservationSession(String name) throws Exception {
+		return null;
+	}
+
+	@Override
+	protected ManagerSessionRemote getNewManagerSession(String name, String carRentalName) throws Exception {
+		return null;
+	}
+
+	@Override
+	protected void checkForAvailableCarTypes(ReservationSessionRemote reservationSessionRemote, Date start, Date end) throws Exception {
+		reservationSessionRemote.getAvailableCarTypes(start, end);
+	}
+
+	@Override
+	protected void addQuoteToSession(ReservationSessionRemote reservationSessionRemote, String name, Date start, Date end, String carType, String region) throws Exception {
 
 	}
 
-	/**
-	 * Confirm the given quote to receive a final reservation of a car.
-	 * 
-	 * @param 	quote 
-	 * 			the quote to be confirmed
-	 * @return	the final reservation of a car
-	 * 
-	 * @throws 	Exception
-	 * 			if things go wrong, throw exception
-	 */
 	@Override
-	protected Reservation confirmQuote(Quote quote) throws Exception {
-        Reservation reservation = stub.confirmQuote(quote);
-        return reservation;
-	}
-	
-	/**
-	 * Get all reservations made by the given client.
-	 *
-	 * @param 	clientName
-	 * 			name of the client
-	 * @return	the list of reservations of the given client
-	 * 
-	 * @throws 	Exception
-	 * 			if things go wrong, throw exception
-	 */
-	@Override
-	protected List<Reservation> getReservationsByRenter(String clientName) throws Exception {
-        List<Reservation> reservations = stub.getReservationsByRenter(clientName);
-        System.out.println(reservations.toString());
-        return reservations;
+	protected List<Reservation> confirmQuotes(ReservationSessionRemote reservationSessionRemote, String name) throws Exception {
+		return null;
 	}
 
-	/**
-	 * Get the number of reservations for a particular car type.
-	 * 
-	 * @param 	carType 
-	 * 			name of the car type
-	 * @return 	number of reservations for the given car type
-	 * 
-	 * @throws 	Exception
-	 * 			if things go wrong, throw exception
-	 */
 	@Override
-	protected int getNumberOfReservationsForCarType(String carType) throws Exception {
-		 return stub.getNumberOfReservationsForCarType(carType);
-
+	protected int getNumberOfReservationsBy(ManagerSessionRemote ms, String clientName) throws Exception {
+		return 0;
 	}
 
+	@Override
+	protected int getNumberOfReservationsForCarType(ManagerSessionRemote ms, String carRentalName, String carType) throws Exception {
+		return 0;
+	}
 }

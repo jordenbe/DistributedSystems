@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Set;
 
 public interface ReservationSessionRemote extends Remote {
-    void createQuote(ReservationConstraints constraints, String guest);
-    List<Quote> getCurrentQuotes();
+    void createQuote(ReservationConstraints constraints, String guest) throws RemoteException;
+    List<Quote> getCurrentQuotes() throws  RemoteException;
     void confirmQuotes(String name) throws ReservationException, RemoteException;
     Set<String> getAvailableCarTypes(Date start, Date end) throws RemoteException;
-    String getCheapestCarType(Date start,Date end);
+    String getCheapestCarType(Date start,Date end) throws RemoteException;
 
     List<Reservation> getCurrentReservations();
 

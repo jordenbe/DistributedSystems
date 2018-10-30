@@ -1,8 +1,9 @@
 package rental.session;
 
 import rental.CarRentalCompany;
+import rental.CarType;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Set;
 
 public interface ManagerSessionRemote {
@@ -11,7 +12,7 @@ public interface ManagerSessionRemote {
 
     void unregisterCarRentalCompany(CarRentalCompany company);
 
-    Set<String> getRegisteredCarRentalCompanies();
+    ArrayList<CarRentalCompany> getRegisteredCarRentalCompanies();
 
     Set<String> getCarInformation(String carRentalCompany);
 
@@ -19,5 +20,5 @@ public interface ManagerSessionRemote {
 
     String getBestCustomer();
 
-    String getMostPopularCarType(String carRentalCompany, int year);
+    CarType getMostPopularCarType(String carRentalCompany, int year);
 }
