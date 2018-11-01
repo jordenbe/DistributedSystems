@@ -2,20 +2,17 @@ package client;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import rental.*;
 import rental.session.ManagerSessionRemote;
-import rental.session.ReservationSessionRemote;
-import server.ICarRentalCompany;
+import rental.session.IReservationSessionRemote;
+import server.IRemoteCarRentalCompany;
 
-import javax.naming.spi.ResolveResult;
-
-public class Client extends AbstractTestManagement<ReservationSessionRemote,ManagerSessionRemote> {
-	private ICarRentalCompany stub;
+public class Client extends AbstractTestManagement<IReservationSessionRemote,ManagerSessionRemote> {
+	private IRemoteCarRentalCompany stub;
 
     /********
 	 * MAIN *
@@ -42,7 +39,7 @@ public class Client extends AbstractTestManagement<ReservationSessionRemote,Mana
 
 		try {
 			Registry registry = LocateRegistry.getRegistry(null);
-			 stub = (ICarRentalCompany) registry.lookup(carRentalCompanyName);
+			 stub = (IRemoteCarRentalCompany) registry.lookup(carRentalCompanyName);
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
@@ -52,12 +49,11 @@ public class Client extends AbstractTestManagement<ReservationSessionRemote,Mana
 
 	@Override
 	protected Set<String> getBestClients(ManagerSessionRemote ms) throws Exception {
-	 	//return ms.getBestCustomer();
-		return null;
+	 	return ms.getBestCustomer();
 	}
 
 	@Override
-	protected String getCheapestCarType(ReservationSessionRemote reservationSessionRemote, Date start, Date end, String region) throws Exception {
+	protected String getCheapestCarType(IReservationSessionRemote reservationSessionRemote, Date start, Date end, String region) throws Exception {
 	return	reservationSessionRemote.getCheapestCarType(start, end);
 	}
 
@@ -67,7 +63,7 @@ public class Client extends AbstractTestManagement<ReservationSessionRemote,Mana
 	}
 
 	@Override
-	protected ReservationSessionRemote getNewReservationSession(String name) throws Exception {
+	protected IReservationSessionRemote getNewReservationSession(String name) throws Exception {
 		return null;
 	}
 
@@ -77,17 +73,17 @@ public class Client extends AbstractTestManagement<ReservationSessionRemote,Mana
 	}
 
 	@Override
-	protected void checkForAvailableCarTypes(ReservationSessionRemote reservationSessionRemote, Date start, Date end) throws Exception {
+	protected void checkForAvailableCarTypes(IReservationSessionRemote reservationSessionRemote, Date start, Date end) throws Exception {
 		reservationSessionRemote.getAvailableCarTypes(start, end);
 	}
 
 	@Override
-	protected void addQuoteToSession(ReservationSessionRemote reservationSessionRemote, String name, Date start, Date end, String carType, String region) throws Exception {
+	protected void addQuoteToSession(IReservationSessionRemote reservationSessionRemote, String name, Date start, Date end, String carType, String region) throws Exception {
 
 	}
 
 	@Override
-	protected List<Reservation> confirmQuotes(ReservationSessionRemote reservationSessionRemote, String name) throws Exception {
+	protected List<Reservation> confirmQuotes(IReservationSessionRemote reservationSessionRemote, String name) throws Exception {
 	return reservationSessionRemote.confirmQuotes(name);
 	}
 

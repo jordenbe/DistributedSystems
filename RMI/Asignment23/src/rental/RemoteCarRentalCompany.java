@@ -1,27 +1,26 @@
 package rental;
 
-import server.ICarRentalCompany;
+import server.IRemoteCarRentalCompany;
 
-import java.time.LocalDate;
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-public class CarRentalCompany implements ICarRentalCompany {
+public class RemoteCarRentalCompany implements IRemoteCarRentalCompany {
 
-	private static Logger logger = Logger.getLogger(CarRentalCompany.class.getName());
-	
+	private static Logger logger = Logger.getLogger(rental.RemoteCarRentalCompany.class.getName());
+
 	private List<String> regions;
 	private String name;
 	private List<Car> cars;
-	private Map<String,CarType> carTypes = new HashMap<String, CarType>();
+	private Map<String, CarType> carTypes = new HashMap<String, CarType>();
 
 	/***************
 	 * CONSTRUCTOR *
 	 ***************/
 
-	public CarRentalCompany(String name, List<String> regions, List<Car> cars) {
+	public RemoteCarRentalCompany(String name, List<String> regions, List<Car> cars) {
 		logger.log(Level.INFO, "<{0}> Car Rental Company {0} starting up...", name);
 		setName(name);
 		this.cars = cars;
@@ -45,21 +44,21 @@ public class CarRentalCompany implements ICarRentalCompany {
 
 
 
-    /***********
-     * Regions *
-     **********/
-    private void setRegions(List<String> regions) {
-        this.regions = regions;
-    }
-    
-    public List<String> getRegions() {
-        return this.regions;
-    }
-    
-    public boolean hasRegion(String region) {
-        return this.regions.contains(region);
-    }
-	
+	/***********
+	 * Regions *
+	 **********/
+	private void setRegions(List<String> regions) {
+		this.regions = regions;
+	}
+
+	public List<String> getRegions() {
+		return this.regions;
+	}
+
+	public boolean hasRegion(String region) {
+		return this.regions.contains(region);
+	}
+
 	/*************
 	 * CAR TYPES *
 	 *************/
@@ -67,13 +66,34 @@ public class CarRentalCompany implements ICarRentalCompany {
 	public Collection<CarType> getAllCarTypes() {
 		return carTypes.values();
 	}
-	
+
+	@Override
+	public List<Car> getAllCars() throws RemoteException {
+		return cars;
+	}
+
+	@Override
+	public int getNumberOfReservationsForCarTypeInYear(String type, int year) throws RemoteException {
+		int c = 0;
+		for(Car car : getAllCars())
+		{
+			for(Reservation r : car.getReservations())
+			{
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(r.getStartDate());
+				if(r.getCarType().equals(type) && cal.get(Calendar.YEAR) == year)
+					c++;
+			}
+		}
+		return c;
+	}
+
 	public CarType getCarType(String carTypeName) {
 		if(carTypes.containsKey(carTypeName))
 			return carTypes.get(carTypeName);
 		throw new IllegalArgumentException("<" + carTypeName + "> No car type of name " + carTypeName);
 	}
-	
+
 	// mark
 	public boolean isAvailable(String carTypeName, Date start, Date end) {
 		logger.log(Level.INFO, "<{0}> Checking availability for car type {1}", new Object[]{name, carTypeName});
@@ -83,7 +103,7 @@ public class CarRentalCompany implements ICarRentalCompany {
 			throw new IllegalArgumentException("<" + carTypeName + "> No car type of name " + carTypeName);
 		}
 	}
-	
+
 	public Set<CarType> getAvailableCarTypes(Date start, Date end) {
 		Set<CarType> availableCarTypes = new HashSet<CarType>();
 		for (Car car : cars) {
@@ -94,16 +114,10 @@ public class CarRentalCompany implements ICarRentalCompany {
 		return availableCarTypes;
 	}
 
-
-
-    /*********
+	/*********
 	 * CARS *
 	 *********/
 
-    public List<Car> getCars() {
-        return cars;
-    }
-	
 	private Car getCar(int uid) {
 		for (Car car : cars) {
 			if (car.getId() == uid)
@@ -111,7 +125,7 @@ public class CarRentalCompany implements ICarRentalCompany {
 		}
 		throw new IllegalArgumentException("<" + name + "> No car with uid " + uid);
 	}
-	
+
 	private List<Car> getAvailableCars(String carType, Date start, Date end) {
 		List<Car> availableCars = new LinkedList<Car>();
 		for (Car car : cars) {
@@ -128,25 +142,25 @@ public class CarRentalCompany implements ICarRentalCompany {
 
 	public Quote createQuote(ReservationConstraints constraints, String client)
 			throws ReservationException {
-		logger.log(Level.INFO, "<{0}> Creating tentative reservation for {1} with constraints {2}", 
-                        new Object[]{name, client, constraints.toString()});
-		
-				
+		logger.log(Level.INFO, "<{0}> Creating tentative reservation for {1} with constraints {2}",
+				new Object[]{name, client, constraints.toString()});
+
+
 		if(!regions.contains(constraints.getRegion()) || !isAvailable(constraints.getCarType(), constraints.getStartDate(), constraints.getEndDate()))
 			throw new ReservationException("<" + name
-				+ "> No cars available to satisfy the given constraints.");
+					+ "> No cars available to satisfy the given constraints.");
 
 		CarType type = getCarType(constraints.getCarType());
-		
+
 		double price = calculateRentalPrice(type.getRentalPricePerDay(),constraints.getStartDate(), constraints.getEndDate());
-		
+
 		return new Quote(client, constraints.getStartDate(), constraints.getEndDate(), getName(), constraints.getCarType(), price);
 	}
 
 	// Implementation can be subject to different pricing strategies
 	private double calculateRentalPrice(double rentalPricePerDay, Date start, Date end) {
 		return rentalPricePerDay * Math.ceil((end.getTime() - start.getTime())
-						/ (1000 * 60 * 60 * 24D));
+				/ (1000 * 60 * 60 * 24D));
 	}
 
 	public Reservation confirmQuote(Quote quote) throws ReservationException {
@@ -154,9 +168,9 @@ public class CarRentalCompany implements ICarRentalCompany {
 		List<Car> availableCars = getAvailableCars(quote.getCarType(), quote.getStartDate(), quote.getEndDate());
 		if(availableCars.isEmpty())
 			throw new ReservationException("Reservation failed, all cars of type " + quote.getCarType()
-	                + " are unavailable from " + quote.getStartDate() + " to " + quote.getEndDate());
+					+ " are unavailable from " + quote.getStartDate() + " to " + quote.getEndDate());
 		Car car = availableCars.get((int)(Math.random()*availableCars.size()));
-		
+
 		Reservation res = new Reservation(quote, car.getId());
 		car.addReservation(res);
 		return res;
@@ -181,11 +195,11 @@ public class CarRentalCompany implements ICarRentalCompany {
 	}
 
 	public  int getNumberOfReservationsForCarType(final String carType) {
-	int totaal = 0;
+		int totaal = 0;
 		for (Car car: cars ) {
 			for (Reservation reservation: car.getReservations()  ) {
 				if (reservation.getCarType().equals(carType)) {
-				totaal++;
+					totaal++;
 
 				}
 			}
@@ -193,36 +207,16 @@ public class CarRentalCompany implements ICarRentalCompany {
 		return  totaal;
 	}
 
-    public  int getNumberOfReservationsForCarTypeInYear(final String carType,int year) {
-        int totaal = 0;
-        for (Car car: cars ) {
-            for (Reservation reservation: car.getReservations()  ) {
-                Date d = reservation.getStartDate();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(d);
-                int resYear = cal.get(Calendar.YEAR);
-                if (reservation.getCarType().equals(carType) && resYear == year) {
-                    totaal++;
-
-                }
-            }
-        }
-        return  totaal;
-    }
-
-	public int getNumberOfReservationsBy(String client) {
-		int total = 0;
-		for(Car car : cars){
-			total += car.getNumberOfReservationsBy(client);
-		}
-		return total;
+	@Override
+	public String getId() throws RemoteException {
+		return null;
 	}
 
 	@Override
 	public String toString() {
 		return String.format("<%s> CRC is active in regions %s and serving with %d car types", name, listToString(regions), carTypes.size());
 	}
-	
+
 	private static String listToString(List<? extends Object> input) {
 		StringBuilder out = new StringBuilder();
 		for (int i=0; i < input.size(); i++) {
@@ -234,5 +228,5 @@ public class CarRentalCompany implements ICarRentalCompany {
 		}
 		return out.toString();
 	}
-	
+
 }

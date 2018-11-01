@@ -1,6 +1,7 @@
 package rental;
 
-import server.ICarRentalCompany;
+import rental.company.RemoteCarRentalCompany;
+import server.IRemoteCarRentalCompany;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,8 +23,8 @@ public class RentalServer {
 
 		System.setSecurityManager(null);
 		try {
-			CarRentalCompany obj = new CarRentalCompany(data.name, data.regions, data.cars);
-			ICarRentalCompany stub = (ICarRentalCompany) UnicastRemoteObject.exportObject(obj, 0);
+			RemoteCarRentalCompany obj = new RemoteCarRentalCompany(data.name, data.regions, data.cars);
+			IRemoteCarRentalCompany stub = (IRemoteCarRentalCompany) UnicastRemoteObject.exportObject(obj, 0);
 			Registry registry = LocateRegistry.getRegistry();
 			registry.bind("Hertz", stub);
 			System.err.println("Server ready");

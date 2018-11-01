@@ -11,10 +11,6 @@ public class Quote implements Serializable {
     private String rentalCompany;
     private String carType;
     private double rentalPrice;
-    
-    /***************
-	 * CONSTRUCTOR *
-	 ***************/
 
     Quote(String carRenter, Date start, Date end, String rentalCompany, String carType, double rentalPrice) {
         this.carRenter = carRenter;
@@ -48,15 +44,10 @@ public class Quote implements Serializable {
     public String getCarType() {
 		return carType;
 	}
-    
-    /*************
-     * TO STRING *
-     *************/
-    
+
     @Override
     public String toString() {
-        return String.format("Quote for %s from %s to %s at %s\nCar type: %s\tTotal price: %.2f", 
-                getCarRenter(), getStartDate(), getEndDate(), getRentalCompany(), getCarType(), getRentalPrice());
+        return String.format("Quote for %s from %s to %s at %s\nCar type: %s\tTotal price: %.2f", getCarRenter(), getStartDate(), getEndDate(), getRentalCompany(), getCarType(), getRentalPrice());
     }
 
     @Override

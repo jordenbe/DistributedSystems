@@ -2,18 +2,22 @@ package rental.session;
 
 
 import rental.Car;
-import rental.CarRentalCompany;
 import rental.CarType;
 import rental.Reservation;
+import server.IRemoteCarRentalCompany;
 import server.NamingService;
 
-import javax.naming.NameNotFoundException;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class ManagerSession implements ManagerSessionRemote {
+public class ManagerSession extends Session implements ManagerSessionRemote {
+
+    public ManagerSession(String id) throws RemoteException {
+        setId(id);
+    }
+
     @Override
-    public void registerCarRentalCompany(CarRentalCompany company) {
+    public void registerCarRentalCompany(IRemoteCarRentalCompany company) {
         try {
             NamingService.registerCarRentalCompany(company);
         } catch (RemoteException e) {
@@ -23,7 +27,7 @@ public class ManagerSession implements ManagerSessionRemote {
     }
 
     @Override
-    public void unregisterCarRentalCompany(CarRentalCompany company) {
+    public void unregisterCarRentalCompany(IRemoteCarRentalCompany company) {
         try {
             NamingService.unregisterCarRentalCompany(company);
         } catch (RemoteException e) {
@@ -33,57 +37,52 @@ public class ManagerSession implements ManagerSessionRemote {
     }
 
     @Override
-    public ArrayList<CarRentalCompany> getRegisteredCarRentalCompanies() {
+    public ArrayList<IRemoteCarRentalCompany> getRegisteredCarRentalCompanies() {
         return NamingService.getCarRentalCompanies();
     }
 
     @Override
-    public Set<String> getCarInformation(String carRentalCompany) {
-        Set<String> carTypes = new HashSet<>();
-        for (CarRentalCompany crc : getRegisteredCarRentalCompanies()) {
-            if (crc.getName().equals(carRentalCompany)) {
-                for (CarType ct : crc.getAllCarTypes()) {
-                    carTypes.add(ct.getName());
-                }
-            }
-        }
-        return  carTypes;
-    }
-
-    @Override
-    public int getNumberOfReservationsByCarType(String carRentalCompany, String carType) {
-        int resAmount=0;
+    public int getNumberOfReservationsByCarType(String carRentalCompany, String carType)
+    {
         try {
-          CarRentalCompany company =  NamingService.getCarRentalCompany(carRentalCompany);
-            resAmount = company.getNumberOfReservationsForCarType(carType);
-
+            IRemoteCarRentalCompany company = NamingService.getCarRentalCompany(carRentalCompany);
+            return company.getNumberOfReservationsForCarType(carType);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        return resAmount;
+        return 0;
     }
 
     @Override
     public int getNumberOfReservationsBy(String client) {
-        int c = 0;
-        for(CarRentalCompany cr : NamingService.getCarRentalCompanies())
-        {
-            c += cr.getNumberOfReservationsBy(client);
+        try{
+            int c=0;
+            for(IRemoteCarRentalCompany cr : NamingService.getCarRentalCompanies()) {
+                c += cr.getReservationsByRenter(client).size();
+            }
+            return c;
         }
-        return c;
+        catch(RemoteException e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
     public String getBestCustomer() {
-       // Set<String> companies = NamingService.getCarRentalCompanies();
         Map<String,Integer> klanten = new TreeMap<>();
-        for (CarRentalCompany carRentalCompany: NamingService.getCarRentalCompanies()){
-            for(Car car: carRentalCompany.getCars()){
-                for(Reservation r : car.getReservations())
-                {
-                    Integer cur = klanten.get(r.getCarRenter());
-                    klanten.put(r.getCarRenter(),cur==null?1:cur++);
+        for (IRemoteCarRentalCompany carRentalCompany: NamingService.getCarRentalCompanies()){
+            try {
+                for(Car car: carRentalCompany.getAllCars()){
+                    for(Reservation r : car.getReservations())
+                    {
+                        Integer cur = klanten.get(r.getCarRenter());
+                        klanten.put(r.getCarRenter(),cur==null?1:cur++);
+                    }
                 }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }
         Map.Entry<String,Integer> max = null;
@@ -98,18 +97,22 @@ public class ManagerSession implements ManagerSessionRemote {
         int resAmount=0;
         CarType mostPopularCT=null;
         try {
-            CarRentalCompany company = NamingService.getCarRentalCompany(carRentalCompany);
+            IRemoteCarRentalCompany company = NamingService.getCarRentalCompany(carRentalCompany);
             for (CarType ct : company.getAllCarTypes()) {
                 if (company.getNumberOfReservationsForCarTypeInYear(ct.getName(), year) > resAmount) {
                     resAmount = company.getNumberOfReservationsForCarTypeInYear(ct.getName(), year);
                     mostPopularCT = ct;
                 }
-
             }
 
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         return mostPopularCT;
+    }
+
+    @Override
+    public void setCompanyName(String name) throws RemoteException {
+        super.setId(name);
     }
 }

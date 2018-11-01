@@ -1,13 +1,14 @@
 package client;
 
 import rental.*;
-import rental.session.ReservationSessionRemote;
+import rental.session.IReservationSessionRemote;
+import server.IRemoteCarRentalCompany;
 import server.NamingService;
 
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class ReservationSession implements ReservationSessionRemote {
+public class IReservationSession implements IReservationSessionRemote {
 
     List<Quote> quotesList = new ArrayList();
     List<Reservation> reservationList = new ArrayList();
@@ -15,11 +16,12 @@ public class ReservationSession implements ReservationSessionRemote {
     @Override
     public  void createQuote(ReservationConstraints constraints, String guest) {
         boolean found = false;
-        for(CarRentalCompany company:NamingService.getCarRentalCompanies()){
+        List<IRemoteCarRentalCompany> companies = NamingService.getCarRentalCompanies();
+        Collections.shuffle(companies);
+        for(IRemoteCarRentalCompany company : companies) {
             if(!found)
             {
                 try{
-                //    CarRentalCompany company =  NamingService.getCarRentalCompany(name);
                     Quote q = company.createQuote(constraints, guest);
                     found = true;
                     quotesList.add(q);
@@ -38,7 +40,7 @@ public class ReservationSession implements ReservationSessionRemote {
     @Override
     public synchronized List<Reservation> confirmQuotes(String name) throws ReservationException, RemoteException {
         for(Quote quote :getCurrentQuotes()){
-            CarRentalCompany company = NamingService.getCarRentalCompany(quote.getRentalCompany());
+            IRemoteCarRentalCompany company = NamingService.getCarRentalCompany(quote.getRentalCompany());
             try{
                 if(quote.getCarRenter().equals(name))
                     reservationList.add(company.confirmQuote(quote));
@@ -58,10 +60,10 @@ public class ReservationSession implements ReservationSessionRemote {
     @Override
     public Set<String> getAvailableCarTypes(Date start, Date end) throws RemoteException {
         Set<String> carTypes = new HashSet<>();
-        for(CarRentalCompany com : NamingService.getCarRentalCompanies())
+        for(IRemoteCarRentalCompany company : NamingService.getCarRentalCompanies())
         {
-            for (CarType ct:com.getAvailableCarTypes(start, end)){
-                carTypes.add(ct.getName());
+            for (CarType type : company.getAvailableCarTypes(start, end)){
+                carTypes.add(type.getName());
             }
         }
         return carTypes;
@@ -72,12 +74,12 @@ public class ReservationSession implements ReservationSessionRemote {
        String cartype = "";
        double cheapestPrice = Double.MAX_VALUE;
 
-        for(CarRentalCompany com : NamingService.getCarRentalCompanies())
+        for(IRemoteCarRentalCompany company : NamingService.getCarRentalCompanies())
         {
-            for (CarType ct:com.getAvailableCarTypes(start, end)){
-                if (ct.getRentalPricePerDay() < cheapestPrice) {
-                    cartype = ct.getName();
-                    cheapestPrice =  ct.getRentalPricePerDay();
+            for (CarType type : company.getAvailableCarTypes(start, end)){
+                if (type.getRentalPricePerDay() < cheapestPrice) {
+                    cartype = type.getName();
+                    cheapestPrice =  type.getRentalPricePerDay();
                 }
             }
         }
