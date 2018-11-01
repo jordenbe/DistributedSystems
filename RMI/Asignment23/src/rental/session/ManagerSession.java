@@ -70,7 +70,7 @@ public class ManagerSession extends Session implements ManagerSessionRemote {
     }
 
     @Override
-    public String getBestCustomer() {
+    public Set<String> getBestCustomer() {
         Map<String,Integer> klanten = new TreeMap<>();
         for (IRemoteCarRentalCompany carRentalCompany: NamingService.getCarRentalCompanies()){
             try {
@@ -85,11 +85,14 @@ public class ManagerSession extends Session implements ManagerSessionRemote {
                 e.printStackTrace();
             }
         }
-        Map.Entry<String,Integer> max = null;
+        int maxRes = Collections.max(klanten.values());
+        Set<String> bestClients = new HashSet<>();
+       // Map.Entry<String,Integer> max = null;
         for(Map.Entry<String,Integer> e : klanten.entrySet())
-            if(max == null || e.getValue() > max.getValue())
-                max = e;
-        return max.getKey();
+            if (e.getValue() == maxRes) {
+                bestClients.add(e.getKey());
+            }
+        return bestClients;
     }
 
     @Override

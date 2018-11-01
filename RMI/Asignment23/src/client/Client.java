@@ -49,6 +49,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 
 	@Override
 	protected Set<String> getBestClients(ManagerSessionRemote ms) throws Exception {
+
 	 	return ms.getBestCustomer();
 	}
 
@@ -64,6 +65,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 
 	@Override
 	protected IReservationSessionRemote getNewReservationSession(String name) throws Exception {
+		//IReservationSessionRemote iReservationSessionRemote =
 		return null;
 	}
 

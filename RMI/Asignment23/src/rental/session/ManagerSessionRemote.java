@@ -13,7 +13,7 @@ public interface ManagerSessionRemote {
     ArrayList<IRemoteCarRentalCompany> getRegisteredCarRentalCompanies();
     int getNumberOfReservationsByCarType(String carRentalCompany, String carType);
     int getNumberOfReservationsBy(String client);
-    String getBestCustomer();
+    Set<String> getBestCustomer();
     CarType getMostPopularCarType(String carRentalCompany, int year);
     void setCompanyName(String name) throws RemoteException;
 }

@@ -1,6 +1,6 @@
 package rental;
 
-import rental.company.RemoteCarRentalCompany;
+
 import server.IRemoteCarRentalCompany;
 
 import java.io.BufferedReader;
