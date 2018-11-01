@@ -9,9 +9,14 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class IReservationSession implements IReservationSessionRemote {
-
+    String name;
     List<Quote> quotesList = new ArrayList();
     List<Reservation> reservationList = new ArrayList();
+
+
+    public IReservationSession(String name) {
+        this.name = name;
+    }
 
     @Override
     public  void createQuote(ReservationConstraints constraints, String guest) {
@@ -89,5 +94,10 @@ public class IReservationSession implements IReservationSessionRemote {
     @Override
     public List<Reservation> getCurrentReservations() {
         return reservationList;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

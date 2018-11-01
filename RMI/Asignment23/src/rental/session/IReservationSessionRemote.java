@@ -19,4 +19,5 @@ public interface IReservationSessionRemote extends Remote {
     Set<String> getAvailableCarTypes(Date start, Date end) throws RemoteException;
     String getCheapestCarType(Date start,Date end) throws RemoteException;
     List<Reservation> getCurrentReservations();
+    String getName();
 }
