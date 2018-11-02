@@ -1,4 +1,4 @@
-package client;
+package rental.session;
 
 import rental.*;
 import rental.session.IReservationSessionRemote;

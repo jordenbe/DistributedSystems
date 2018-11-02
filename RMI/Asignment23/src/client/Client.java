@@ -76,7 +76,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,IMa
 
 	@Override
 	protected void addQuoteToSession(IReservationSessionRemote reservationSessionRemote, String name, Date start, Date end, String carType, String region) throws Exception {
-
+		reservationSessionRemote.createQuote(new ReservationConstraints(start, end, carType, region), "client");
 	}
 
 	@Override
