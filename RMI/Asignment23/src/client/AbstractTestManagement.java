@@ -67,7 +67,7 @@ public abstract class AbstractTestManagement<ReservationSession, ManagerSession>
      */
     protected abstract CarType getMostPopularCarTypeIn(ManagerSession ms, String carRentalCompanyName, int year) throws Exception;
 
-    //protected abstract String getMostPopularCarRentalCompany(ManagerSession ms) throws Exception;
+    //protected abstract String getMostPopularCarRentalCompany(RemoteManagerSession ms) throws Exception;
 
     
     public AbstractTestManagement(String scriptFile) {
@@ -162,7 +162,7 @@ public abstract class AbstractTestManagement<ReservationSession, ManagerSession>
 	
 /*
     private void checkPopularCrc(String mostPopularCrcName) throws Exception {
-        ManagerSession rental = getNewManagerSession("someName", "someCrc");
+        RemoteManagerSession rental = getNewManagerSession("someName", "someCrc");
         String favorite = getMostPopularCarRentalCompany(rental);
         if(mostPopularCrcName.equals(favorite)) {
             System.out.println("Correct most popular car rental company: "+ favorite);

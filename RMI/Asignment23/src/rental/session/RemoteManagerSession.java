@@ -10,9 +10,9 @@ import server.NamingService;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class ManagerSession extends Session implements ManagerSessionRemote {
+public class RemoteManagerSession extends Session implements IManagerSessionRemote {
 
-    public ManagerSession(String id) throws RemoteException {
+    public RemoteManagerSession(String id) throws RemoteException {
         setId(id);
     }
 

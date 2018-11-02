@@ -8,18 +8,18 @@ import server.NamingService;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class IReservationSession implements IReservationSessionRemote {
+public class ReservationSessionRemote implements IReservationSessionRemote {
     String name;
     List<Quote> quotesList = new ArrayList();
     List<Reservation> reservationList = new ArrayList();
 
 
-    public IReservationSession(String name) {
+    public ReservationSessionRemote(String name) {
         this.name = name;
     }
 
     @Override
-    public  void createQuote(ReservationConstraints constraints, String guest) {
+    public synchronized void createQuote(ReservationConstraints constraints, String guest) {
         boolean found = false;
         List<IRemoteCarRentalCompany> companies = NamingService.getCarRentalCompanies();
         Collections.shuffle(companies);

@@ -1,7 +1,7 @@
 package rental.session;
 
 
-import client.IReservationSession;
+import client.ReservationSessionRemote;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SessionControl implements SessionControlRemote {
     List<IReservationSessionRemote> reservationSessions = new ArrayList<>();
-    List<ManagerSessionRemote> managerSessions = new ArrayList<>();
+    List<IManagerSessionRemote> managerSessions = new ArrayList<>();
 
     public SessionControl() {
     }
@@ -17,13 +17,13 @@ public class SessionControl implements SessionControlRemote {
 
 
     public IReservationSessionRemote createNewReservationSession(String name) throws RemoteException {
-        IReservationSession reservationSession = new IReservationSession(name);
+        ReservationSessionRemote reservationSession = new ReservationSessionRemote(name);
         reservationSessions.add(reservationSession);
         return reservationSession;
     }
 
-    public ManagerSessionRemote createNewManagerSession(String name) throws RemoteException {
-        ManagerSessionRemote managerSession = new ManagerSession(name);
+    public IManagerSessionRemote createNewManagerSession(String name) throws RemoteException {
+        IManagerSessionRemote managerSession = new RemoteManagerSession(name);
         managerSessions.add(managerSession);
         return managerSession;
     }
@@ -41,7 +41,7 @@ public class SessionControl implements SessionControlRemote {
         }
 
         if (iReservationSessionRemote == null) {
-            iReservationSessionRemote = new IReservationSession(name);
+            iReservationSessionRemote = new ReservationSessionRemote(name);
             reservationSessions.add( iReservationSessionRemote);
         }
 

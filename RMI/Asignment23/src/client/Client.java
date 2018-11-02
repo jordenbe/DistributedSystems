@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Set;
 
 import rental.*;
-import rental.session.ManagerSessionRemote;
+import rental.session.IManagerSessionRemote;
 import rental.session.IReservationSessionRemote;
 import rental.session.SessionControlRemote;
 
-public class Client extends AbstractTestManagement<IReservationSessionRemote,ManagerSessionRemote> {
+public class Client extends AbstractTestManagement<IReservationSessionRemote,IManagerSessionRemote> {
 	//private IRemoteCarRentalCompany stub;
 	private SessionControlRemote sessionControl;
 
@@ -23,7 +23,6 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 	public static void main(String[] args) throws Exception {
 		Client client = new Client("trips");
 		client.run();
-
 	}
 
 	
@@ -45,7 +44,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 
 
 	@Override
-	protected Set<String> getBestClients(ManagerSessionRemote ms) throws Exception {
+	protected Set<String> getBestClients(IManagerSessionRemote ms) throws Exception {
 
 	 	return ms.getBestCustomer();
 	}
@@ -56,7 +55,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 	}
 
 	@Override
-	protected CarType getMostPopularCarTypeIn(ManagerSessionRemote ms, String carRentalCompanyName, int year) throws Exception {
+	protected CarType getMostPopularCarTypeIn(IManagerSessionRemote ms, String carRentalCompanyName, int year) throws Exception {
 	return 	ms.getMostPopularCarType(carRentalCompanyName, year);
 	}
 
@@ -66,7 +65,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 	}
 
 	@Override
-	protected ManagerSessionRemote getNewManagerSession(String name, String carRentalName) throws Exception {
+	protected IManagerSessionRemote getNewManagerSession(String name, String carRentalName) throws Exception {
 		return sessionControl.createNewManagerSession(carRentalName);
 	}
 
@@ -86,12 +85,12 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 	}
 
 	@Override
-	protected int getNumberOfReservationsBy(ManagerSessionRemote ms, String clientName) throws Exception {
+	protected int getNumberOfReservationsBy(IManagerSessionRemote ms, String clientName) throws Exception {
 		return ms.getNumberOfReservationsBy(clientName);
 	}
 
 	@Override
-	protected int getNumberOfReservationsForCarType(ManagerSessionRemote ms, String carRentalName, String carType) throws Exception {
+	protected int getNumberOfReservationsForCarType(IManagerSessionRemote ms, String carRentalName, String carType) throws Exception {
 		return ms.getNumberOfReservationsByCarType(carRentalName,carType);
 	}
 }

@@ -173,7 +173,7 @@ public abstract class AbstractTestAgency<ReservationSession, ManagerSession> ext
 			} catch (Exception e) { throw new ApplicationException(e); }
 				
 /*			try{
-				ManagerSession aMgmtSession = getNewManagerSession("CarRent", name);
+				RemoteManagerSession aMgmtSession = getNewManagerSession("CarRent", name);
 	            System.out.println("Number of reservations by " + name + ":\t" + getNumberOfReservationsBy(aMgmtSession, name));
 	            System.out.println();
 			} catch (Exception e) { throw new ApplicationException(e); }

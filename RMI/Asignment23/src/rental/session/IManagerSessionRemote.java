@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Set;
 
-public interface ManagerSessionRemote {
+public interface IManagerSessionRemote {
     void registerCarRentalCompany(IRemoteCarRentalCompany company);
     void unregisterCarRentalCompany(IRemoteCarRentalCompany company);
     ArrayList<IRemoteCarRentalCompany> getRegisteredCarRentalCompanies();
