@@ -1,8 +1,9 @@
 package rental.session;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 
-public abstract class Session
+public abstract class Session implements Serializable
 {
     private String id;
 

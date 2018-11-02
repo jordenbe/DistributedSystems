@@ -7,6 +7,7 @@ import rental.Reservation;
 import server.IRemoteCarRentalCompany;
 import server.NamingService;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 

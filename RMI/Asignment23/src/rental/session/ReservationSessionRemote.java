@@ -5,10 +5,11 @@ import rental.session.IReservationSessionRemote;
 import server.IRemoteCarRentalCompany;
 import server.NamingService;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class ReservationSessionRemote implements IReservationSessionRemote {
+public class ReservationSessionRemote extends Session implements IReservationSessionRemote {
     String name;
     List<Quote> quotesList = new ArrayList();
     List<Reservation> reservationList = new ArrayList();
