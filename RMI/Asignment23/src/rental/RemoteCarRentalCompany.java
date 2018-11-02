@@ -34,7 +34,8 @@ public class RemoteCarRentalCompany implements IRemoteCarRentalCompany {
 	 * NAME *
 	 ********/
 
-	public String getName() {
+	@Override
+	public String getName() throws RemoteException {
 		return name;
 	}
 
@@ -141,7 +142,7 @@ public class RemoteCarRentalCompany implements IRemoteCarRentalCompany {
 	 ****************/
 
 	public Quote createQuote(ReservationConstraints constraints, String client)
-			throws ReservationException {
+			throws ReservationException, RemoteException {
 		logger.log(Level.INFO, "<{0}> Creating tentative reservation for {1} with constraints {2}",
 				new Object[]{name, client, constraints.toString()});
 
@@ -209,7 +210,7 @@ public class RemoteCarRentalCompany implements IRemoteCarRentalCompany {
 
 	@Override
 	public String getId() throws RemoteException {
-		return null;
+		return name;
 	}
 
 	@Override

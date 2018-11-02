@@ -1,6 +1,8 @@
 package rental;
 
 
+import rental.session.SessionControlRemote;
+import rental.session.SessionControl;
 import server.IRemoteCarRentalCompany;
 
 import java.io.BufferedReader;
@@ -18,15 +20,26 @@ public class RentalServer {
 	
 	public static void main(String[] args) throws ReservationException,
 			NumberFormatException, IOException {
-		CrcData data  = loadData("hertz.csv");
+		CrcData hertz  = loadData("hertz.csv");
+		CrcData dockx = loadData("dockx.csv");
+
 
 
 		System.setSecurityManager(null);
 		try {
-			RemoteCarRentalCompany obj = new RemoteCarRentalCompany(data.name, data.regions, data.cars);
-			IRemoteCarRentalCompany stub = (IRemoteCarRentalCompany) UnicastRemoteObject.exportObject(obj, 0);
+			RemoteCarRentalCompany hertzRemote = new RemoteCarRentalCompany(hertz.name, hertz.regions, hertz.cars);
+			IRemoteCarRentalCompany hertzStub = (IRemoteCarRentalCompany) UnicastRemoteObject.exportObject(hertzRemote, 0);
+
+			RemoteCarRentalCompany dockxRemote = new RemoteCarRentalCompany(dockx.name, dockx.regions, dockx.cars);
+			IRemoteCarRentalCompany dockxStub = (IRemoteCarRentalCompany) UnicastRemoteObject.exportObject(dockxRemote, 0);
+
+			SessionControl sessionManager = new SessionControl();
+			SessionControlRemote remoteSessionManager = (SessionControlRemote) UnicastRemoteObject.exportObject(sessionManager, 0);
+
 			Registry registry = LocateRegistry.getRegistry();
-			registry.bind("Hertz", stub);
+			registry.bind("Hertz", hertzStub);
+			registry.bind("Dockx",dockxStub);
+			registry.bind("SessionControl", remoteSessionManager);
 			System.err.println("Server ready");
 		} catch (Exception e) {
 			System.err.println("Server exception: " + e.toString());

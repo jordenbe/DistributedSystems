@@ -16,4 +16,5 @@ public interface ManagerSessionRemote {
     Set<String> getBestCustomer();
     CarType getMostPopularCarType(String carRentalCompany, int year);
     void setCompanyName(String name) throws RemoteException;
+    String getId();
 }

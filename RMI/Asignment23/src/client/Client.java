@@ -9,10 +9,11 @@ import java.util.Set;
 import rental.*;
 import rental.session.ManagerSessionRemote;
 import rental.session.IReservationSessionRemote;
-import server.IRemoteCarRentalCompany;
+import rental.session.SessionControlRemote;
 
 public class Client extends AbstractTestManagement<IReservationSessionRemote,ManagerSessionRemote> {
-	private IRemoteCarRentalCompany stub;
+	//private IRemoteCarRentalCompany stub;
+	private SessionControlRemote sessionControl;
 
     /********
 	 * MAIN *
@@ -20,11 +21,7 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 
 
 	public static void main(String[] args) throws Exception {
-		
-		String carRentalCompanyName = "Hertz";
-		
-		// An example reservation scenario on car rental company 'Hertz' would be...
-		Client client = new Client("simpleTrips", carRentalCompanyName);
+		Client client = new Client("trips");
 		client.run();
 
 	}
@@ -34,12 +31,12 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 	 * CONSTRUCTOR *
 	 ***************/
 	
-	public Client(String scriptFile, String carRentalCompanyName) {
+	public Client(String scriptFile) {
 		super(scriptFile);
 
 		try {
 			Registry registry = LocateRegistry.getRegistry(null);
-			 stub = (IRemoteCarRentalCompany) registry.lookup(carRentalCompanyName);
+			 sessionControl = (SessionControlRemote) registry.lookup("SessionControl");
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
@@ -65,13 +62,12 @@ public class Client extends AbstractTestManagement<IReservationSessionRemote,Man
 
 	@Override
 	protected IReservationSessionRemote getNewReservationSession(String name) throws Exception {
-		//IReservationSessionRemote iReservationSessionRemote =
-		return null;
+		return sessionControl.createNewReservationSession(name);
 	}
 
 	@Override
 	protected ManagerSessionRemote getNewManagerSession(String name, String carRentalName) throws Exception {
-		return null;
+		return sessionControl.createNewManagerSession(carRentalName);
 	}
 
 	@Override
