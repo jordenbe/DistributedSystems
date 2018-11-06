@@ -1,6 +1,8 @@
 package rental;
 
 
+import rental.session.IManagerSessionRemote;
+import rental.session.RemoteManagerSession;
 import rental.session.SessionControlRemote;
 import rental.session.SessionControl;
 import server.IRemoteCarRentalCompany;
@@ -40,6 +42,13 @@ public class RentalAgency {
 			registry.bind("Hertz", hertzStub);
 			registry.bind("Dockx",dockxStub);
 			registry.bind("SessionControl", remoteSessionManager);
+
+			IManagerSessionRemote hertzManager = new RemoteManagerSession("Hertz");
+			hertzManager.registerCarRentalCompany(hertzRemote);
+			IManagerSessionRemote dockxManager = new RemoteManagerSession("Dockx");
+			dockxManager.registerCarRentalCompany(dockxRemote);
+
+
 			System.err.println("Server ready");
 		} catch (Exception e) {
 			System.err.println("Server exception: " + e.toString());

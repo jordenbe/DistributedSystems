@@ -26,9 +26,7 @@ public class SessionControl implements SessionControlRemote {
         return managerSession;
     }
 
-
-
-   /* public IReservationSessionRemote getReservationSession(String name) throws RemoteException {
+    /* public IReservationSessionRemote getReservationSession(String name) throws RemoteException {
         IReservationSessionRemote iReservationSessionRemote = null;
         if (reservationSessions != null) {
             for (IReservationSessionRemote s : reservationSessions) {
