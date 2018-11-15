@@ -27,6 +27,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
 
     private String renter;
     private List<Quote> quotes = new LinkedList<Quote>();
+    List<Reservation> reservationList = new ArrayList();
 
     @Override
     public Set<String> getAllRentalCompanies() {
@@ -105,19 +106,19 @@ public class CarRentalSession implements CarRentalSessionRemote {
                {
                    Reservation r = crc.confirmQuote(q);
                    em.persist(r);
-                   reservations.add(r);
+                   reservationList.add(r);
                }
            }
        }
        catch(Exception e){
-           for (Reservation res:reservations){
+           for (Reservation res:reservationList){
                     em.find(CarRentalCompany.class,res.getRentalCompany()).cancelReservation(res);            
                 }
            throw new ReservationException(e);
            
        }
-      quotes.clear();
-       return reservations;
+     // quotes.clear();
+       return reservationList;
     }
 
     @Override
