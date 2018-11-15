@@ -87,7 +87,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
        catch(Exception e){
            throw new ReservationException(e);
        }
-       
+       quotes.clear();
        return reservations;
     }
 
