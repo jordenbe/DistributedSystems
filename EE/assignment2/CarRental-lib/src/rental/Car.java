@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,10 +19,10 @@ import rental.Reservation;
 public class Car implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private CarType type;
     
     @OneToMany(cascade =  CascadeType.PERSIST)
@@ -36,10 +37,10 @@ public class Car implements Serializable {
         this.reservations = new HashSet<>();
     }
     
-    public Car(int uid, CarType type) {
-    	this.id = uid;
-        this.type = type;
-        this.reservations = new HashSet<Reservation>();
+    public Car(CarType type)
+    {
+        this();
+        setType(type);
     }
 
     /******

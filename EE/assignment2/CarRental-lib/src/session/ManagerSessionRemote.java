@@ -15,19 +15,33 @@ public interface ManagerSessionRemote {
     
     public Set<Integer> getCarIds(String company,String type);
     
-    public int getNumberOfReservations(String company, String type, int carId);
+    public int getNumberOfReservations(String company, int carId);
     
     public int getNumberOfReservations(String company, String type);
     
-    void addCar(int uid, CarType type);
+    public int getNumberOfReservations(String clietnName);
     
     void addCar(Car car);
     
-    CarType addCarType(String name, int nbOfSeats, float trunkSpace, double rentalPricePerDay, boolean smokingAllowed);
+    void addCar(String company, long id);
     
-    CarType addCarType(CarType cartype);
+    long createCar(String carTypeId);
+    
+    String addCarType(String name, int nbOfSeats, float trunkSpace, double rentalPricePerDay, boolean smokingAllowed);
+    
+    String addCarType(CarType cartype);
+    
+    void addCarType(String company, String id);
     
     void addCarRentalCompany(String name, List<String> regions, List<Car> cars);
+    
+    void addCarRentalCompany(String name);
+    
+    CarType getMostPopularCarType(String company, int year);
+    
+   
+    
+    void addRegions(String company, List<String> regions);
     
     /*************/
     /***LOOKUPS***/

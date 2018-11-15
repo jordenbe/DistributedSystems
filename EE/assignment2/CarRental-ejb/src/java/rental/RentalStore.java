@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class RentalStore {
 
-    private static Map<String, CarRentalCompany> rentals;
+    /*private static Map<String, CarRentalCompany> rentals;
 
     public static CarRentalCompany getRental(String company) {
         CarRentalCompany out = RentalStore.getRentals().get(company);
@@ -91,5 +91,5 @@ public class RentalStore {
             public List<Car> cars = new LinkedList<Car>();
             public String name;
             public List<String> regions =  new LinkedList<String>();
-    }
+    }*/
 }

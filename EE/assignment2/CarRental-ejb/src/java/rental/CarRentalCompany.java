@@ -9,10 +9,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -20,12 +23,12 @@ public class CarRentalCompany {
 
     private static Logger logger = Logger.getLogger(CarRentalCompany.class.getName());
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<Car> cars;
-    @OneToMany
+    @ManyToMany(cascade =CascadeType.PERSIST)
     private Set<CarType> carTypes = new HashSet<CarType>();
+    @ElementCollection
     private List<String> regions;
 
 	
@@ -37,6 +40,12 @@ public class CarRentalCompany {
         this.cars = new ArrayList<>();
         regions = new ArrayList<>();
     }
+    
+    public CarRentalCompany(String name)
+    {
+        this();
+        setName(name);
+    }
 
     public CarRentalCompany(String name, List<String> regions, List<Car> cars) {
         logger.log(Level.INFO, "<{0}> Starting up CRC {0} ...", name);
@@ -46,6 +55,12 @@ public class CarRentalCompany {
         for (Car car : cars) {
             carTypes.add(car.getType());
         }
+    }
+    
+    public void addCar(Car car)
+    {
+        if(car != null)
+            cars.add(car);
     }
 
     /********
@@ -69,6 +84,12 @@ public class CarRentalCompany {
     
     public List<String> getRegions() {
         return this.regions;
+    }
+    
+    public void addRegions(Collection<String> regions)
+    {
+        if(regions != null)
+            this.regions.addAll(regions);
     }
 
     /*************
@@ -100,6 +121,12 @@ public class CarRentalCompany {
             }
         }
         return availableCarTypes;
+    }
+    
+    public void addCarType(CarType type)
+    {
+        if(type != null)
+            carTypes.add(type);
     }
 
     /*********

@@ -1,5 +1,6 @@
 package session;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -8,6 +9,7 @@ import java.util.Set;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import rental.CarRentalCompany;
 import rental.CarType;
 import rental.Quote;
 import rental.RentalStore;
@@ -26,30 +28,37 @@ public class CarRentalSession implements CarRentalSessionRemote {
 
     @Override
     public Set<String> getAllRentalCompanies() {
-        return new HashSet<String>(em.createNamedQuery("SELECT Com.name FROM RentalCompany Com", String.class).getResultList());
+        return new HashSet<String>(em.createQuery("SELECT Com.name FROM RentalCompany Com", String.class).getResultList());
     }
     
     @Override
     public List<CarType> getAvailableCarTypes(Date start, Date end) {
-        List<CarType> availableCarTypes = new LinkedList<CarType>();
-        for(String crc : getAllRentalCompanies()) {
-            for(CarType ct : RentalStore.getRentals().get(crc).getAvailableCarTypes(start, end)) {
-                if(!availableCarTypes.contains(ct))
-                    availableCarTypes.add(ct);
-            }
-        }
+        String query = "SELECT DISTINCT C.type FROM Car C WHERE C.id NOT IN (SELECT R.carId FROM Reservation R WHERE R.startDate <= :end AND R.endDate >= :start)";
+        List<CarType> availableCarTypes = em.createQuery(query, CarType.class)
+                    .setParameter("start", start)
+                    .setParameter("end", end)
+                    .getResultList();
         return availableCarTypes;
     }
 
     @Override
-    public Quote createQuote(String company, ReservationConstraints constraints) throws ReservationException {
-        try {
-            Quote out = RentalStore.getRental(company).createQuote(constraints, renter);
-            quotes.add(out);
-            return out;
-        } catch(Exception e) {
-            throw new ReservationException(e);
+    public Quote createQuote(String client, ReservationConstraints constraints) throws ReservationException {
+        List<CarRentalCompany> companies = em.createQuery("SELECT CRC FROM CarRentalCompany CRC JOIN CRC.carTypes CT WHERE CT.name = :carType AND :region MEMBER OF CRC.regions", CarRentalCompany.class)
+                .setParameter("region", constraints.getRegion())
+                .setParameter("carType", constraints.getCarType())
+                .getResultList();
+        
+        Quote q = null;
+        for(CarRentalCompany crc : companies)
+        {
+            try{
+                q = crc.createQuote(constraints, client);
+                quotes.add(q);
+                return q;
+            }
+            catch(Exception e){}
         }
+        return null;
     }
 
     @Override
@@ -59,17 +68,24 @@ public class CarRentalSession implements CarRentalSessionRemote {
 
     @Override
     public List<Reservation> confirmQuotes() throws ReservationException {
-        List<Reservation> done = new LinkedList<Reservation>();
-        try {
-            for (Quote quote : quotes) {
-                done.add(RentalStore.getRental(quote.getRentalCompany()).confirmQuote(quote));
-            }
-        } catch (Exception e) {
-            for(Reservation r:done)
-                RentalStore.getRental(r.getRentalCompany()).cancelReservation(r);
-            throw new ReservationException(e);
-        }
-        return done;
+       List<Reservation> reservations = new ArrayList<Reservation>();
+       
+       try{
+           for(Quote q : quotes){
+               CarRentalCompany crc = em.find(CarRentalCompany.class, q.getRentalCompany());
+               if(crc != null)
+               {
+                   Reservation r = crc.confirmQuote(q);
+                   em.persist(r);
+                   reservations.add(r);
+               }
+           }
+       }
+       catch(Exception e){
+           throw new ReservationException(e);
+       }
+       
+       return reservations;
     }
 
     @Override
@@ -78,5 +94,12 @@ public class CarRentalSession implements CarRentalSessionRemote {
             throw new IllegalStateException("name already set");
         }
         renter = name;
+    }
+
+    @Override
+    public String getCheapestCarType(Date start, Date end, String region) {
+        List l = em.createQuery("").setParameter("region", region).setParameter("start",start).setParameter("end", end).getResultList();
+        if(l.isEmpty()) return null;
+        return (String)l.get(0);
     }
 }

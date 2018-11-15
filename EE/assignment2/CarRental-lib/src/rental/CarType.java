@@ -10,7 +10,6 @@ import javax.persistence.Id;
 public class CarType implements Serializable{
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
     
     private int nbOfSeats;
