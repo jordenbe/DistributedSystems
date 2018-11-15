@@ -23,7 +23,7 @@ public interface CarRentalSessionRemote {
     
     public List<Quote> getCurrentQuotes();
     
-    public List<Reservation> confirmQuotes() throws ReservationException;
+    public List<Reservation> confirmQuotes(String name) throws ReservationException;
     
     public String getCheapestCarType(Date start, Date end, String region);
     

@@ -8,7 +8,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import rental.Car;
 import rental.CarType;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-11-15T17:53:27")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-11-16T00:20:40")
 @StaticMetamodel(CarRentalCompany.class)
 public class CarRentalCompany_ { 
 
