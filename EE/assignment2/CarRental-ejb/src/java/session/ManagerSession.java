@@ -140,7 +140,7 @@ public class ManagerSession implements ManagerSessionRemote {
 
     @Override
     public void addCarType(String company, String id) {
-        if(em.find(CarType.class, id) == null)
+        
         {
             CarRentalCompany crc = em.find(CarRentalCompany.class, company);
             crc.addCarType(em.find(CarType.class,id));
