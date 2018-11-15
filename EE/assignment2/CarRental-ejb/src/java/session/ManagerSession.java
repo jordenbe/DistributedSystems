@@ -1,27 +1,15 @@
 package session;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import rental.Car;
 import rental.CarRentalCompany;
 import rental.CarType;
-import rental.RentalStore;
-import rental.Reservation;
 
 @Stateless
 public class ManagerSession implements ManagerSessionRemote {
@@ -102,15 +90,16 @@ public class ManagerSession implements ManagerSessionRemote {
         String query = "SELECT R.carRenter, COUNT(R) as amount FROM Reservation R GROUP BY R.carRenter ORDER BY amount DESC";
         List<Object[]> bestClients = em.createQuery(query).getResultList();
         Set<String> results = new HashSet<String>();
-        Long max = (Long) bestClients.get(0)[1];
-
-        for (Object[] array : bestClients) {
-            Long count = (Long) array[1];
-            if (count.equals(max)) {
-                results.add((String) array[0]);
+        if(bestClients.size() > 0)
+        {
+            Long max = (Long) bestClients.get(0)[1];
+            for (Object[] array : bestClients) {
+                Long count = (Long) array[1];
+                if (count.equals(max)) {
+                    results.add((String) array[0]);
+                }
             }
         }
-
         return results;
     }
 
@@ -122,13 +111,16 @@ public class ManagerSession implements ManagerSessionRemote {
 
     @Override
     public CarType getMostPopularCarType(String company, int year) {
-        String type = (String)em.createQuery("SELECT R.carType FROM Reservation R WHERE R.rentalCompany = :company AND R.startDate > :curYear AND R.startDate < :nextYear"
-                + "GROUP BY R.carType ORDER BY COUNT(R.id) DESC")
+        List<String> lst = em.createQuery("SELECT R.carType FROM Reservation R WHERE"
+                + " R.rentalCompany = :company AND R.startDate > :curYear AND R.startDate < :nextYear"
+                + " GROUP BY R.carType ORDER BY COUNT(R.carId) DESC", String.class)
                 .setParameter("company", company)
-                .setParameter("curYear", new GregorianCalendar(year,0,0).getTime())
-                .setParameter("nextYear", new GregorianCalendar(year+1,0,0).getTime()).getResultList().get(0);
-        return em.find(CarType.class, type);
-        
+                .setParameter("curYear", (new GregorianCalendar(year,0,0).getTime()))
+                .setParameter("nextYear", (new GregorianCalendar(year+1,0,0).getTime()))
+                .getResultList();
+        if(lst != null && !lst.isEmpty())
+            return em.find(CarType.class, lst.get(0));
+        return null;
     }
 
     @Override
