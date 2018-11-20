@@ -97,7 +97,7 @@ public class CarRentalSession implements CarRentalSessionRemote {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public List<Reservation> confirmQuotes(String name) throws ReservationException {
-       List<Reservation> reservations = new ArrayList<Reservation>();
+     //  List<Reservation> reservations = new ArrayList<Reservation>();
        
        try{
            for(Quote q : quotes){
@@ -134,11 +134,34 @@ public class CarRentalSession implements CarRentalSessionRemote {
         List l = em.createQuery("SELECT CT.name FROM CarRentalCompany CRC JOIN CRC.carTypes CT JOIN CRC.cars C"
                 + " WHERE :region MEMBER OF CRC.regions AND C.type = CT AND C.id NOT IN ("
                 + " SELECT R.carId FROM Reservation R WHERE R.startDate <= :end AND R.endDate >= :start)"
-                + " ORDER BY CT.rentalPricePerDay")
+                + " ORDER BY CT.rentalPricePerDay ASC")
                 .setParameter("region", region)
                 .setParameter("start",start)
                 .setParameter("end", end).getResultList();
+        
         if(l.isEmpty()) return null;
         return (String)l.get(0);
+    
+    /* String cartype = "";
+       double cheapestPrice = Double.MAX_VALUE;
+       
+       List<CarRentalCompany> companies = new ArrayList<>();
+         for (String c: getAllRentalCompanies()){
+             companies.add(em.find(CarRentalCompany.class, c));             
+         }
+        for(CarRentalCompany company : companies)
+        {
+             if (company.getRegions().contains(region)){
+            for (CarType type : company.getAvailableCarTypes(start, end)){
+                if (type.getRentalPricePerDay() <= cheapestPrice) {
+                    cartype = type.getName();
+                    cheapestPrice =  type.getRentalPricePerDay();
+                }
+            }
+             }
+        }
+        return  cartype;*/
+
+     
     }
 }
